@@ -1,0 +1,11 @@
+[
+  {
+    "id": "jenkins",
+    "execute-command": "/etc/webhook/jenkins.sh",
+    "pass-arguments-to-command":  [
+      {
+        "source": "entire-payload"
+      },
+    ],
+      }
+]

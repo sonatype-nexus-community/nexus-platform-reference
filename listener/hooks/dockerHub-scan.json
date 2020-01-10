@@ -1,0 +1,24 @@
+[
+  {
+    "execute-command": "/etc/webhook/dockerHub-scan.sh",
+    "id": "dockerHub-scan",
+    "pass-arguments-to-command":  [
+      {
+        "source": "entire-payload"
+      },
+      {
+        "source": "payload",
+        "name": "repository.repo_name"
+      },
+      {
+        "source": "payload",
+        "name": "push_data.tag"
+      },
+      {
+        "source": "payload",
+        "name": "hash"
+
+      }
+    ]
+      }
+]

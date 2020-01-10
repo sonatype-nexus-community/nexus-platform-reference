@@ -1,0 +1,11 @@
+[
+  {
+    "id": "test",
+    "execute-command": "/etc/webhook/test.sh",
+    "pass-arguments-to-command":  [
+      {
+        "source": "entire-payload"
+      },
+    ],
+      }
+]

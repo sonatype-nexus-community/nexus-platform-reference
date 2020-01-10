@@ -1,0 +1,137 @@
+version: '3'
+services:
+   nginx-proxy:
+     build: ./nginx
+     image: 'sonatype-se/sonatype_nginx-proxy:2.6.2'
+     ports:
+       - '443:443'
+       - '5000:5000'
+       - '8011:8011'
+     command:
+       - nginx
+       - '-g'
+       - daemon off;
+     depends_on:
+       - iq-server
+       - nexus
+      
+   nexus:
+     image: 'sonatype/nexus3:3.20.1'
+     volumes:
+       - '~/.demo-pv/nexus-data:/nexus-data'
+     ports:
+       - '8081:8081'
+       - '18443:18443'
+
+   iq-server:
+     image: 'sonatype-se/my-iq-server:1.82.0'
+     build: ./iq-server
+     volumes:
+       - '~/.demo-pv/iq-data:/sonatype-work'
+       - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log'
+     ports:
+       - '8070:8070' 
+       - '8071:8071'
+
+# see Nexus IQ for Jira https://help.sonatype.com/integrations/nexus-iq-for-jira
+   jira:
+     image: 'atlassian/jira-software:8.6.0' # https://hub.docker.com/r/atlassian/jira-software
+     volumes:
+       - '~/.demo-pv/jira-data:/var/atlassian/application-data/jira'
+     ports:
+       - '8080:8080'
+
+# Docker based build jobs that want to use NXRM need to be outside of docker
+# network so they can hit the Nginx server for ingress and routing.      
+   jenkins:
+     image: jenkinsci/blueocean # https://hub.docker.com/r/jenkinsci/blueocean
+     user: root
+     volumes:
+       - '~/.jenkins:/var/jenkins_home'
+       - '/var/run/docker.sock:/var/run/docker.sock'
+     ports:
+       - '9080:8080'
+       - '50000:50000'
+
+# # Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
+#    clair-db:
+#      # near-daily updates https://hub.docker.com/r/arminc/clair-db/tags
+#      image: arminc/clair-db:2019-11-11
+#      ports:
+#        - '5432:5432'
+#    clair:
+#      image: arminc/clair-local-scan:v2.0.8_fe9b059d930314b54c78f75afe265955faf4fdc1
+#      ports:
+#        - '6060:6060'
+#      links:
+#        - clair-db:postgres
+#      depends_on:
+#        - clair-db
+
+## Webhook listener
+#    listener:
+#      image: my-webhook-listener:1.0.0
+#      build: ./listener
+#      volumes:
+#        - /usr/local/bin/docker:/usr/bin/docker
+#        - /var/run/docker.sock:/var/run/docker.sock
+#      ports:
+#        - "9000:9000"
+#      command:
+#        - -verbose 
+#        - -hotreload
+#        - -hooks=/etc/webhook/test.json
+#        - -hooks=/etc/webhook/dockerHub-scan.json
+#        - -hooks=/etc/webhook/nxrm-consume.json
+#        - -hooks=/etc/webhook/iq-consume.json
+#        - -hooks=/etc/webhook/quay-consume.json
+
+  ## Anchore
+  #  anchore-engine:
+  #    image: docker.io/anchore/anchore-engine:latest
+  #    #privileged: true
+  #    depends_on:
+  #      - anchore-db
+  #    ports:
+  #      - "8228:8228"
+  #      - "8338:8338"
+  #    volumes:
+  #      - ~/.demo-pv/aevolume/config:/config/:z
+  #    logging:
+  #      driver: "json-file"
+  #      options:
+  #        max-size: 100m
+  #    environment:
+  #     # NOTE: this should be set to the same name as this service (e.g. anchore-engine)
+  #      - ANCHORE_HOST_ID=dockerhostid-anchore-engine
+  #      - ANCHORE_ENDPOINT_HOSTNAME=anchore-engine
+  #  anchore-db:
+  #    image: "postgres:9"
+  #    volumes:
+  #      - ~/.demo-pv/aevolume/db:/var/lib/postgresql/data/pgdata/:z
+  #    environment:
+  #      - POSTGRES_PASSWORD=mysecretpassword
+  #      - PGDATA=/var/lib/postgresql/data/pgdata/
+  #    logging:
+  #      driver: "json-file"
+  #      options:
+  #        max-size: 100m
+  #    #uncomment to expose a port to allow direct/external access to the DB, for debugging
+  #    #ports:
+  #    # - "2345:5432"
+
+  ## Go
+  #  athens:
+  #    image: gomods/athens:v0.4.0
+  #    restart: always
+  #    ports:
+  #      - 3000:3000
+  #    volumes:
+  #      - ~/.demo-pv/athens:/usr/local/athens
+  #    environment:
+  #      - ATHENS_STORAGE_TYPE=disk
+  #      - ATHENS_DISK_STORAGE_ROOT=/usr/local/athens
+        
+  #  go:
+  #    build: ./golang/
+  #    image: sonatype-se/golang:compose

@@ -1,0 +1,11 @@
+[
+  {
+    "execute-command": "/etc/webhook/iq-consume.sh",
+    "id": "iq-consume",
+    "pass-arguments-to-command":  [
+      {
+        "source": "entire-payload"
+      }
+    ]
+      }
+]

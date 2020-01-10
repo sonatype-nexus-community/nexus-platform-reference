@@ -1,0 +1,9 @@
+*.lic
+
+#dockstation
+.env
+#anchore db
+/db
+
+/.vscode
+.DS_Store
