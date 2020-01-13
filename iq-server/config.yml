@@ -108,15 +108,15 @@ server:
 # Note that any user of the Nexus IQ Server will have access to see all projects and applicable issue types available
 # to the configured JIRA account. More details available in the Nexus IQ Server documentation. If enabled, ensure that
 # the baseUrl configuration setting is also enabled and correct, because generated tickets contain links to the server.
-jira:
+#jira:
   # The JIRA server address
-  url: "http://jira:8080/"
+  #url: "http://jira:8080/"
 
   # The username used to connect to the JIRA server
-  username: "cmyanko"
+  #username: "sonatype"
 
   # The password used to connect to the JIRA server
-  password: "password"
+  #password: "password"
 
     # Any JIRA project issue type required fields without default values defined in JIRA must have their initial
     # field values defined here in order for that project and issue type to be available for policy notifications
