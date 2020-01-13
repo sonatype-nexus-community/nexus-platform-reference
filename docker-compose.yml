@@ -35,7 +35,7 @@ services:
 
 # see Nexus IQ for Jira https://help.sonatype.com/integrations/nexus-iq-for-jira
    jira:
-     image: 'atlassian/jira-software:8.6.0' # https://hub.docker.com/r/atlassian/jira-software
+     image: 'atlassian/jira-software:8.5.3' # https://hub.docker.com/r/atlassian/jira-software
      volumes:
        - '~/.demo-pv/jira-data:/var/atlassian/application-data/jira'
      ports:
