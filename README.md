@@ -83,7 +83,7 @@ docker-compose up -d nginx-proxy
 ```
 This container makes it's own self-signed cert so you'll have to push past the warning in your browser
 
-You should now have a fully functioning 
+You should now have a fully functioning Nexus Platform
 
 To stop, use docker-compose:
 
@@ -116,3 +116,8 @@ I run Jenkins outside of Docker (local app) which allow it to hit the Nexus repo
 
 
 #### JIRA
+Here we use the public JIRA image so I just followed their documentation. Once running go through the wizard and you'll need to gewt a license from Atlassian ( https://www.atlassian.com/purchase/product/jira-software ). It is $10/yr for a 10 user license of JRA Software 'Server'.
+
+If you look at the config.yml in iq-server yu;ll see it is set for an account id of ' with a password of 'password 'sonatype'. If you use these values it will minimize the need to change the config.yml and rebuild the IQ container.
+
+IRA will come up on localhost:8080 but I've added jira to etc/host to match the docker dns name. You should be able to hit at jira:8080 and then set it's base url to match to make the 'gadgets' error go away.
