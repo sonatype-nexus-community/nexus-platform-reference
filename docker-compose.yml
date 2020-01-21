@@ -24,7 +24,7 @@ services:
        - '18443:18443'
 
    iq-server:
-     image: 'sonatype-se/my-iq-server:1.82.0'
+     image: 'sonatype-se/my-iq-server:1.82.0.1'
      build: ./iq-server
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work'
@@ -135,3 +135,27 @@ services:
   #  go:
   #    build: ./golang/
   #    image: sonatype-se/golang:compose
+
+## Fortify on-premise integration
+   #The Integration Servicve connects IQ to Fortify SSC
+   intSvc:
+     image: 'cmyanko/nexus-ssc-integration:19.1.0.10'
+     build: ./intSvc
+     depends_on:
+       - ssc
+       - iq-server
+     ports:
+       - '8182:8182'
+     volumes:
+       - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work'
+
+   # The SSC container is a private container for Microfocus and Sonatype employees
+   # for use in Demo's and PoC's    
+   ssc:
+      image: 'fortifydocker/sscdemo'
+      ports:
+       - '8888:8080'
+      volumes:
+       - '~/.demo-pv/fortify:/fortify'
+      environment:
+       - SSC_MAX_MEM_MB=4096
