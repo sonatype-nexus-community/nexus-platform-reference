@@ -2,7 +2,7 @@ version: '3'
 services:
    nginx-proxy:
      build: ./nginx
-     image: 'sonatype-se/sonatype_nginx-proxy:2.6.2'
+     image: 'sonatype-se/sonatype_nginx-proxy:2.6.3'
      ports:
        - '443:443'
        - '5000:5000'
@@ -24,7 +24,7 @@ services:
        - '18443:18443'
 
    iq-server:
-     image: 'sonatype-se/my-iq-server:1.84.0'
+     image: 'sonatype-se/my-iq-server:1.84.1'
      build: ./iq-server
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
@@ -138,24 +138,24 @@ services:
 
 ## Fortify on-premise integration
    #The Integration Servicve connects IQ to Fortify SSC
-  #  intSvc:
-  #    image: 'cmyanko/nexus-ssc-integration:19.1.0.10'
-  #    build: ./intSvc
-  #    depends_on:
-  #      - ssc
-  #      - iq-server
-  #    ports:
-  #      - '8182:8182'
-  #    volumes:
-  #      - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work:delegated'
+   intSvc:
+     image: 'cmyanko/nexus-ssc-integration:19.1.0.10'
+     build: ./intSvc
+     depends_on:
+       - ssc
+       - iq-server
+     ports:
+       - '8182:8182'
+     volumes:
+       - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work:delegated'
 
    # The SSC container is a private container for Microfocus and Sonatype employees
    # for use in Demo's and PoC's    
-  #  ssc:
-  #     image: 'fortifydocker/sscdemo'
-  #     ports:
-  #      - '8888:8080'
-  #     volumes:
-  #      - '~/.demo-pv/fortify:/fortify:delegated'
-  #     environment:
-  #      - SSC_MAX_MEM_MB=4096
+   ssc:
+      image: 'fortifydocker/sscdemo'
+      ports:
+       - '8888:8080'
+      volumes:
+       - '~/.demo-pv/fortify:/fortify:delegated'
+      environment:
+       - SSC_MAX_MEM_MB=4096
