@@ -18,7 +18,7 @@ services:
    nexus:
      image: 'sonatype/nexus3:3.20.1'
      volumes:
-       - '~/.demo-pv/nexus-data:/nexus-data'
+       - '~/.demo-pv/nexus-data:/nexus-data:delegated'
      ports:
        - '8081:8081'
        - '18443:18443'
@@ -27,8 +27,8 @@ services:
      image: 'sonatype-se/my-iq-server:1.84.0'
      build: ./iq-server
      volumes:
-       - '~/.demo-pv/iq-data:/sonatype-work'
-       - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log'
+       - '~/.demo-pv/iq-data:/sonatype-work:delegated'
+       - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated'
      ports:
        - '8070:8070' 
        - '8071:8071'
@@ -37,7 +37,7 @@ services:
    jira:
      image: 'atlassian/jira-software:8.5.3' # https://hub.docker.com/r/atlassian/jira-software
      volumes:
-       - '~/.demo-pv/jira-data:/var/atlassian/application-data/jira'
+       - '~/.demo-pv/jira-data:/var/atlassian/application-data/jira:delegated'
      ports:
        - '8080:8080'
 
@@ -47,7 +47,7 @@ services:
      image: jenkinsci/blueocean # https://hub.docker.com/r/jenkinsci/blueocean
      user: root
      volumes:
-       - '~/.jenkins:/var/jenkins_home'
+       - '~/.jenkins:/var/jenkins_home:delegated'
        - '/var/run/docker.sock:/var/run/docker.sock'
      ports:
        - '9080:8080'
@@ -138,24 +138,24 @@ services:
 
 ## Fortify on-premise integration
    #The Integration Servicve connects IQ to Fortify SSC
-   intSvc:
-     image: 'cmyanko/nexus-ssc-integration:19.1.0.10'
-     build: ./intSvc
-     depends_on:
-       - ssc
-       - iq-server
-     ports:
-       - '8182:8182'
-     volumes:
-       - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work'
+  #  intSvc:
+  #    image: 'cmyanko/nexus-ssc-integration:19.1.0.10'
+  #    build: ./intSvc
+  #    depends_on:
+  #      - ssc
+  #      - iq-server
+  #    ports:
+  #      - '8182:8182'
+  #    volumes:
+  #      - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work:delegated'
 
    # The SSC container is a private container for Microfocus and Sonatype employees
    # for use in Demo's and PoC's    
-   ssc:
-      image: 'fortifydocker/sscdemo'
-      ports:
-       - '8888:8080'
-      volumes:
-       - '~/.demo-pv/fortify:/fortify'
-      environment:
-       - SSC_MAX_MEM_MB=4096
+  #  ssc:
+  #     image: 'fortifydocker/sscdemo'
+  #     ports:
+  #      - '8888:8080'
+  #     volumes:
+  #      - '~/.demo-pv/fortify:/fortify:delegated'
+  #     environment:
+  #      - SSC_MAX_MEM_MB=4096
