@@ -122,7 +122,7 @@ If you look at the config.yml in iq-server yu;ll see section for JIRA. I don't b
 
 IRA will come up on localhost:8080 but I've added jira to etc/host to match the docker dns name. You should be able to hit at jira:8080 and then set it's base url to match to make the 'gadgets' error go away.
 
-#### Microfocus oftware Security Center (SSC)
+#### Microfocus Software Security Center (SSC)
 The container for this is in a private MF repo that you need to have access to and is targeted for Micro Focus and Sonatype technical sales and training folks. Once you have access and a trial license here is how to get it running
 
 Start the container, maybe all by itself, with ```docker-compose up ssc``` and watch the logs for this:
