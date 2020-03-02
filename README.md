@@ -125,4 +125,17 @@ IRA will come up on localhost:8080 but I've added jira to etc/host to match the 
 #### Microfocus oftware Security Center (SSC)
 The container for this is in a private MF repo that you need to have access to and is targeted for Micro Focus and Sonatype technical sales and training folks. Once you have access and a trial license here is how to get it running
 
-Start the container, maybe all by itself, with '''docker-compose up ssc'''
+Start the container, maybe all by itself, with ```docker-compose up ssc``` and watch the logs for this:
+```
+MySQL setup=> An empty or uninitialized MySQL volume is detected in /fortify=> Installing MySQL ...=> Done!
+MySQL schema creation
+DB running, creating users + applying schema
+mysql: [Warning] Using a password on the command line interface can be insecure.
+DB init done
+shutting db down
+SSC setup
+Waiting for license..
+```
+...copy your valid fortify.license file to ./demo-pv/fortify and the installation will finish.
+
+Go to http://localhost:8888/ssc to log in for the first time. Note your password as you'll need it for the ```iqproperties``` file in the Integration Service project.
