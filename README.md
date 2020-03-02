@@ -138,4 +138,4 @@ Waiting for license..
 ```
 ...copy your valid fortify.license file to ./demo-pv/fortify and the installation will finish.
 
-Go to http://localhost:8888/ssc to log in for the first time. Note your password as you'll need it for the ```iqproperties``` file in the Integration Service project.
+Go to http://localhost:8888/ssc to log in for the first time (admin/admin). It will ask you to change your password, make a note as you'll need it for the ```iqproperties``` file in the Integration Service project.
