@@ -142,3 +142,7 @@ Go to http://localhost:8888/ssc to log in for the first time (admin/admin). It w
 
 #### SSC Integration Service
 The integration Service is a stand alone application/process that can extract data from IQ and send it to SSC. You can download the same bundle we provide to customers at the Micro Focus Marketplace ( https://marketplace.microfocus.com/fortify/category/Opensource ). The download bundle will have it's own instruction for installing the plugin and how to configure and run the service. This project will try to stay up-to-date with the releases but for testing or upgrades you may need to drop in new binaries. I suggest mapping you webgoat app to the Bill Paymenrt Processer as it is really webgoat data underneath so it all together it should be fairly coherent.
+
+To Start the Integration Service you can use docker-compose up -d intSvc. This will start the iq-server, if it isn't already running, and the SSC container along with the integration.
+
+Note the image build for the intSvc as it needs to move files into the the image being built. If you need to make changes to thoise files you'll need to either delete your image and rebuild or bump the version number, I prefer the later.
