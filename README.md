@@ -139,3 +139,6 @@ Waiting for license..
 ...copy your valid fortify.license file to ./demo-pv/fortify and the installation will finish.
 
 Go to http://localhost:8888/ssc to log in for the first time (admin/admin). It will ask you to change your password, make a note as you'll need it for the ```iqproperties``` file in the Integration Service project.
+
+#### SSC Integration Service
+The integration Service is a stand alone application/process that can extract data from IQ and send it to SSC. You can download the same bundle we provide to customers at the Micro Focus Marketplace ( https://marketplace.microfocus.com/fortify/category/Opensource )
