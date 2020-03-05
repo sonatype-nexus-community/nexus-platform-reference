@@ -10,7 +10,7 @@ I also add a few aliases to my /etc/hosts file to simulate DNS from outside of d
 
 ## Operations
 
-I've set my Docker Desktop to use 2 CPU's, 8 GB of Ram with a 1GB swap.
+I've set my Docker Desktop to use 4 CPU's, 8 GB of Ram with a 1GB swap.
 
 In addition to Docker Desktop, I recommend installing [Kitematic](https://github.com/docker/kitematic/releases) to help with managing containers and seeing into logs.  I've also used [Dockstation](https://dockstation.io/) as another Docker GUI. 
 
