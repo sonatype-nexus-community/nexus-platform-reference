@@ -14,11 +14,6 @@ baseUrl: https://iq-server
 # Hour of the day(0-23) to schedule Policy Monitoring execution. The default is midnight.
 #policyMonitoringHour: 0
 
-# If true, allows anonymous policy evaluation from client tooling (e.g. CLI, CI, Maven).
-# If false, forces authentication and disallows anonymous access.
-# Defaults to false for security.
-#anonymousClientAccessAllowed: false
-
 # Enables/disables cross-site request forgery protection. Defaults to true for increased security.
 #csrfProtection: true
 
@@ -78,52 +73,26 @@ server:
 
         # The number of archived files to keep.
         archivedFileCount: 5
-
-# Notification mail settings.
-# If enabled, ensure that the baseUrl configuration setting is also enabled and correct, because generated emails often contain links to the server.
-#mail:
-
-  # The host running the SMTP server to use. 
-  #hostname: "smtp.mailtrap.io"
-
-  # The port at which the SMTP server listens on. 
-  #port: 465
-
-  # The address used as From for outgoing notification mails sent by the server.
-  #systemEmail: "SonatypeCLM@localhost"
-
-  # The username used to access the mail server.
-  #username: "200258239c92a3"
-
-  # The password used to access the mail server.
-  #password: "8ac2860b581732"
-  
-  # Connect using SSL.
-  #ssl: true
-  
-  # Connect using TLS.
-  #tls: true
-
 # Notification JIRA settings.
 # Note that any user of the Nexus IQ Server will have access to see all projects and applicable issue types available
 # to the configured JIRA account. More details available in the Nexus IQ Server documentation. If enabled, ensure that
 # the baseUrl configuration setting is also enabled and correct, because generated tickets contain links to the server.
 #jira:
   # The JIRA server address
-  #url: "http://jira:8080/"
+  #url: "https://jira.example.org"
 
   # The username used to connect to the JIRA server
-  #username: "sonatype"
+  #username: "exampleuser"
 
   # The password used to connect to the JIRA server
-  #password: "password"
+  #password: "examplepassword"
 
     # Any JIRA project issue type required fields without default values defined in JIRA must have their initial
     # field values defined here in order for that project and issue type to be available for policy notifications
     #customFields:
     # Example 'user' type system field
     #reporter:
-      #name: "username"
+    #  name: "username"
 
     # Example 'array' type system field
     #labels:
@@ -143,21 +112,6 @@ server:
 
     # Example 'datetime' type custom field
     #customfield_14000: "2016-11-01"
-
-# Proxy settings.
-#proxy:
-
-  # The host running the proxy server to use.
-  #hostname: "127.0.0.1"
-
-  # The port at which the proxy server listens on.
-  #port: 80
-
-  # The username used to access the proxy server.
-  #username: "anonymous"
-
-  # The password used to access the proxy server.
-  #password: "guest"
 
 # Configures reverse proxy authentication for the web UI.
 #reverseProxyAuthentication:
