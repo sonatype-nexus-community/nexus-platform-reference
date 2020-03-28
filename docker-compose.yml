@@ -16,7 +16,7 @@ services:
        - nexus
       
    nexus:
-     image: 'sonatype/nexus3:3.21.1'
+     image: 'sonatype/nexus3:3.22.0'
      volumes:
        - '~/.demo-pv/nexus-data:/nexus-data:delegated'
      ports:
@@ -24,7 +24,7 @@ services:
        - '18443:18443'
 
    iq-server:
-     image: 'sonatype-se/my-iq-server:1.87.0'
+     image: 'sonatype-se/my-iq-server:1.88.0'
      build: ./iq-server
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
