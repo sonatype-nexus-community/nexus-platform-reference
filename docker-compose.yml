@@ -137,7 +137,7 @@ services:
   #    image: sonatype-se/golang:compose
 
 ## Fortify on-premise integration
-   #The Integration Servicve connects IQ to Fortify SSC
+   #The Integration Service connects IQ to Fortify SSC
    intSvc:
      image: 'cmyanko/nexus-ssc-integration:19.1.0.10'
      build: ./intSvc
