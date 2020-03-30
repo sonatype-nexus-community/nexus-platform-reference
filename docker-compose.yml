@@ -14,7 +14,7 @@ services:
      depends_on:
        - iq-server
        - nexus
-      
+
    nexus:
      image: 'sonatype/nexus3:3.22.0'
      volumes:
@@ -53,20 +53,20 @@ services:
        - '9080:8080'
        - '50000:50000'
 
-# # Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
-#    clair-db:
-#      # near-daily updates https://hub.docker.com/r/arminc/clair-db/tags
-#      image: arminc/clair-db:2019-11-11
-#      ports:
-#        - '5432:5432'
-#    clair:
-#      image: arminc/clair-local-scan:v2.0.8_fe9b059d930314b54c78f75afe265955faf4fdc1
-#      ports:
-#        - '6060:6060'
-#      links:
-#        - clair-db:postgres
-#      depends_on:
-#        - clair-db
+# Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
+   clair-db:
+     # near-daily updates https://hub.docker.com/r/arminc/clair-db/tags
+     image: arminc/clair-db:2020-03-22
+     ports:
+       - '5432:5432'
+   clair:
+     image: arminc/clair-local-scan:latest
+     ports:
+       - '6060:6060'
+     links:
+       - clair-db:postgres
+     depends_on:
+       - clair-db
 
 ## Webhook listener
 #    listener:
