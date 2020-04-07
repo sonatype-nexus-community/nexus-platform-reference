@@ -24,7 +24,7 @@ services:
        - '18443:18443'
 
    iq-server:
-     image: 'sonatype-se/my-iq-server:1.88.0'
+     image: 'sonatype-se/my-iq-server:1.89.0'
      build: ./iq-server
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
@@ -139,7 +139,7 @@ services:
 ## Fortify on-premise integration
    #The Integration Service connects IQ to Fortify SSC
    intSvc:
-     image: 'cmyanko/nexus-ssc-integration:19.1.0.10'
+     image: 'cmyanko/nexus-ssc-integration:19.1.0.12'
      build: ./intSvc
      depends_on:
        - ssc
