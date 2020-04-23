@@ -1,4 +1,4 @@
-FROM sonatype/nexus-iq-server:1.89.0
+FROM sonatype/nexus-iq-server:1.90.0
 
 # Install Git client
 USER root
