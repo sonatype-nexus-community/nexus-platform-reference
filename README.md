@@ -79,7 +79,7 @@ Now you can log in as admin/admin123 and install license key into IQ. You'll als
 
 The last piece is to start the Nginx proxy assuming you've already edited your etc.hosts file
 ```
-docker-compose up -d nginx-proxy
+docker-compose up -d demo
 ```
 This container makes it's own self-signed cert so you'll have to push past the warning in your browser
 
@@ -94,7 +94,7 @@ docker-compose down
 Subsequent runs can use docker-compose and don't require the demo-setup.sh:
 
 ```
-docker-compose up -d nginx-proxy     #Starts NXRM and IQ with nginx because of the 'depends on' parameter
+docker-compose up -d demo      #Starts NXRM and IQ with nginx because of the 'depends on' parameter
 docker-compose up -d                 #starts everything
 ```
 
