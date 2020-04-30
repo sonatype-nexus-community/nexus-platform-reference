@@ -138,24 +138,24 @@ services:
 
 ## Fortify on-premise integration
    #The Integration Service connects IQ to Fortify SSC
-   intSvc:
-     image: 'cmyanko/nexus-ssc-integration:19.1.0.12'
-     build: ./intSvc
-     depends_on:
-       - ssc
-       - iq-server
-     ports:
-       - '8182:8182'
-     volumes:
-       - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work:delegated'
+  #  intSvc:
+  #    image: 'cmyanko/nexus-ssc-integration:19.1.0.12'
+  #    build: ./intSvc
+  #    depends_on:
+  #      - ssc
+  #      - iq-server
+  #    ports:
+  #      - '8182:8182'
+  #    volumes:
+  #      - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work:delegated'
 
-   # The SSC container is a private container for Microfocus and Sonatype employees
-   # for use in Demo's and PoC's    
-   ssc:
-      image: 'fortifydocker/sscdemo'
-      ports:
-       - '8888:8080'
-      volumes:
-       - '~/.demo-pv/fortify:/fortify:delegated'
-      environment:
-       - SSC_MAX_MEM_MB=4096
+  #  # The SSC container is a private container for Microfocus and Sonatype employees
+  #  # for use in Demo's and PoC's    
+  #  ssc:
+  #     image: 'fortifydocker/sscdemo'
+  #     ports:
+  #      - '8888:8080'
+  #     volumes:
+  #      - '~/.demo-pv/fortify:/fortify:delegated'
+  #     environment:
+  #      - SSC_MAX_MEM_MB=4096
