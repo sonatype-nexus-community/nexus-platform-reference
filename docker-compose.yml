@@ -1,6 +1,6 @@
 version: '3'
 services:
-   nginx-proxy:
+   demo:
      build: ./nginx
      image: 'sonatype-se/sonatype_nginx-proxy:2.6.3'
      ports:
