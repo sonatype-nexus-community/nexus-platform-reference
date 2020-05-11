@@ -24,7 +24,7 @@ services:
        - '18443:18443'
 
    iq-server:
-     image: 'sonatype-se/my-iq-server:1.90.0'
+     image: 'sonatype-se/my-iq-server:1.91.0'
      build: ./iq-server
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
