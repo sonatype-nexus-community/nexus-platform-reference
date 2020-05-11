@@ -12,11 +12,9 @@ I also add a few aliases to my /etc/hosts file to simulate DNS from outside of d
 
 I've set my Docker Desktop to use 4 CPU's, 8 GB of Ram with a 1GB swap.
 
-In addition to Docker Desktop, I recommend installing [Kitematic](https://github.com/docker/kitematic/releases) to help with managing containers and seeing into logs.  I've also used [Dockstation](https://dockstation.io/) as another Docker GUI. 
-
 Here is a [cheatsheat](https://www.cheatography.com/gambit/cheat-sheets/docker/) for the Docker Command line.
 
-But I highly reccomend you use VSCode with the Docker extension installed as it provides easy visibility and management of images and containers. I live in VSCode to manage docker imahes, edit the project, and start/stop my environment. https://code.visualstudio.com/docs/azure/docker
+But I highly reccomend you use VSCode with the Docker extension installed as it provides easy visibility and management of images and containers. I live in VSCode to manage docker images, edit the project, and start/stop my environment. https://code.visualstudio.com/docs/azure/docker
 
 #### URL's
 
@@ -25,6 +23,8 @@ But I highly reccomend you use VSCode with the Docker extension installed as it 
 - Nexus IQ Server accessible via http://localhost:8070 or https://iq-server
 - Docker proxy group registry accessible via https://registry.mycompany.com
 - Docker Private Registry accessible via https://registry.mycompany.com:5000  (docker push, not browser. Don't forget to docker login, I always do ;-)
+
+_NOTE: I'm using a self-signed cert so you'll need to click past tha the first time using HTTPS. Chrome can be particularly difficult but this [article](https://medium.com/@dblazeski/chrome-bypass-net-err-cert-invalid-for-development-daefae43eb12) can help_
 
 #### Persistent Volumes
 
