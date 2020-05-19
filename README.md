@@ -10,7 +10,7 @@ I also add a few aliases to my /etc/hosts file to simulate DNS from outside of d
 
 ## Operations
 
-I've set my Docker Desktop to use 4 CPU's, 8 GB of Ram with a 1GB swap.
+I've set my Docker Desktop to use 4 CPU's, 4 GB of Ram with a 1GB swap.
 
 Here is a [cheatsheat](https://www.cheatography.com/gambit/cheat-sheets/docker/) for the Docker Command line.
 
@@ -35,7 +35,7 @@ One last thing before we get started. I've created a convention of putting all o
   + /iq-logs
   + /nexus-data
 ```
-To externalize the config.yml there is one more volume mount of the current folder. this just makes it easier to make edits to the config.yml without having to rebuild the image.
+To externalize the config.yml there is one more volume mount of the current folder. This just makes it easier to make edits to the config.yml without having to rebuild the image.
 
 It's not clear to me how these work on a windows machine but check your settings for shared drives in Docker Settings. For info check out Getting Started at: https://docs.docker.com/docker-for-windows/
 
@@ -58,7 +58,7 @@ Lets review what just happened:
 Creating network "npr_default" with the default driver
 Creating npr_iq-server_1 ... done
 ```
-The first thing we see is that docke-compose creates 'network', named 'npr_default' (because I put the project in a folder named npr to shorten the name).
+The first thing we see is that docke-compose creates 'network', named 'npr_default' (because I put the project in a folder named npr to shorten the name). If you haven't changed the folder name you'll see 'nexus_platform_reference_default' for a network name. 
 
 Now you can log in as admin/admin123 and install license key into IQ. You'll also want to install that license into NXRM if you have a license for Firewall or NXRM Pro. In Nexus RM you can configure NXRM to talk to IQ at http://iq-server:8070, the reason iq-server is also in etc/hosts is so that when you click on a firewall link, it will also resolve in your browser (which is outside of docker and doesn't have the same DNS suuport, so we just mimic it). If you haven't updated your /etc/hosts file, you can use http://localhost:8070 instead for now.
 
