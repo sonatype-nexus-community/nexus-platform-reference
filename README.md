@@ -35,47 +35,32 @@ One last thing before we get started. I've created a convention of putting all o
   + /iq-logs
   + /nexus-data
 ```
+To externalize the config.yml there is one more volume mount of the current folder. this just makes it easier to make edits to the config.yml without having to rebuild the image.
+
 It's not clear to me how these work on a windows machine but check your settings for shared drives in Docker Settings. For info check out Getting Started at: https://docs.docker.com/docker-for-windows/
 
 
 ## Initial Setup
 
-First lets start NXRM
+####First lets start NXRM
 ```
 docker-compose up -d nexus   #Start just the 'nexus' service  
 ```
-You'll need to ge the password from /nexus-data to log in the first time. When going through the wizrd set your new admin password to match the demo-setup scripts (admin123) or change the scripts to match your password.
-The `demo-setup.sh` script is a one time script to config docker and npm within NXRM; prior to running, review the `docker-compose.yml` file and the persistent volume mounts. They are set to work on a linux machine and will need to be changed for a windows based machine. If you look at the script you can see it creates and runs a few setup scripts once NXRM is responding to traffic.
+You'll need to ge the password from /nexus-data to log in the first time.
 
-```
-./demo-setup.sh
-```
-
-Now lets start IQ
+####Now lets start IQ
 ```
 docker-compose up -d iq-server
 ```
 Lets review what just happened:
 ```
-docker-compose up -d iq-server  
-Creating network "nexusplatform_default" with the default driver
-Building iq-server
-Step 1/3 : FROM sonatype/nexus-iq-server:1.82.0
- ---> ddb41115c38d
-Step 2/3 : COPY config.yml /etc/nexus-iq-server/
- ---> fef3d1285720
-Step 3/3 : HEALTHCHECK CMD curl http://localhost:8071/ping
- ---> Running in b4ff9fea5d32
-Removing intermediate container b4ff9fea5d32
- ---> b2a26fa8f223
-Successfully built b2a26fa8f223
-Successfully tagged sonatype-se/my-iq-server:1.82.0
-WARNING: Image for service iq-server was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
-Creating nexusplatform_iq-server_1 ... done
+➜ docker-compose up -d iq-server
+Creating network "npr_default" with the default driver
+Creating npr_iq-server_1 ... done
 ```
-The first thing we see is that docke-compose creates 'network', then it builds the IQ server container because the image didn't already exist. We make a custome image so that we can modify the 'config.yml' as needed which is copied in in step 2. Once it is built it is tagged with our image name and then run and added to the network, nexusplatform_default. Docker provides DNS names within this network so that containers can talk to each other on that network.
+The first thing we see is that docke-compose creates 'network', named 'npr_default' (because I put the project in a folder named npr to shorten the name).
 
-Now you can log in as admin/admin123 and install license key into IQ. You'll also want to install that license into NXRM if you have a license for Firewall or NXRM Pro. In Nexus RM you can configure NXRM to talk to IQ at http://iq-server:8070, the reason iq-server is also in etc/hosts is so that when you click on a firewall link, it will also resolve in your browser (which is outside of docker and doesn't have the same DNS suuport, so we just mimic it).
+Now you can log in as admin/admin123 and install license key into IQ. You'll also want to install that license into NXRM if you have a license for Firewall or NXRM Pro. In Nexus RM you can configure NXRM to talk to IQ at http://iq-server:8070, the reason iq-server is also in etc/hosts is so that when you click on a firewall link, it will also resolve in your browser (which is outside of docker and doesn't have the same DNS suuport, so we just mimic it). If you haven't updated your /etc/hosts file, you can use http://localhost:8070 instead for now.
 
 The last piece is to start the Nginx proxy assuming you've already edited your etc.hosts file
 ```
