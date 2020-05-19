@@ -87,6 +87,16 @@ docker-compose up -d                 #starts everything
 
 The Ngnix docker image build process generates insecure SSL certificates with fake location information and CNAME of localhost. Understand the risks of using these SSL certificates before proceeding. A deployed solution should use a valid CA certificate.
 
+#### Docker CLI equivalent
+
+If your more of a CLI person, here are all of the commands you'd have to run to recreate what 'docker-compose up -d demo does:
+```
+docker network create npr_default
+docker run --network=npr_default -v ~/.demo-pv/nexus-data:/nexus-data -p 8081:8081 -p 18443:18443 sonatype/nexus3:3.23.0
+docker run --network=npr_default -v ~/.demo-pv/iq-data:/sonatype-work -v ~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log -v .:/etc/nexus-iq-server/ -p 8070:8070 -p 8071:8071 sonatype/nexus-iq-server:1.91.0
+docker run --network=npr_default -p 443:443 -p 5000:5000 -p 8011:8011 sonatype-se/sonatype_nginx-proxy:2.6.3 <-- Note- this needs to be built first
+```
+
 ## Advanced
 
 There are additional services defined within the docker-compose file but commented out to ease getting started. In addition to Jenkins that was mentioned earlie, there are also services defined for Victoria, Clair, Anchore, JIRA, and Webhook Listener examples.
