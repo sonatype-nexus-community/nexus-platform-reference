@@ -42,13 +42,13 @@ It's not clear to me how these work on a windows machine but check your settings
 
 ## Initial Setup
 
-####First lets start NXRM
+#### First lets start NXRM
 ```
 docker-compose up -d nexus   #Start just the 'nexus' service  
 ```
 You'll need to ge the password from /nexus-data to log in the first time.
 
-####Now lets start IQ
+#### Now lets start IQ
 ```
 docker-compose up -d iq-server
 ```
