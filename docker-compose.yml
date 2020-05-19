@@ -24,11 +24,11 @@ services:
        - '18443:18443'
 
    iq-server:
-     image: 'sonatype-se/my-iq-server:1.91.0'
-     build: ./iq-server
+     image: 'sonatype/nexus-iq-server:1.91.0'
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
        - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated'
+       - '.:/etc/nexus-iq-server/:delegated'
      ports:
        - '8070:8070' 
        - '8071:8071'
