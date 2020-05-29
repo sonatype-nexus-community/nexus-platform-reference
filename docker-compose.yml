@@ -24,7 +24,7 @@ services:
        - '18443:18443'
 
    iq-server:
-     image: 'sonatype/nexus-iq-server:1.91.0'
+     image: 'sonatype/nexus-iq-server:1.92.0'
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
        - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated'
