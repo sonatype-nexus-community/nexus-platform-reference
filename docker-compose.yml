@@ -56,7 +56,7 @@ services:
 # Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
    clair-db:
      # near-daily updates https://hub.docker.com/r/arminc/clair-db/tags
-     image: arminc/clair-db:2020-03-22
+     image: arminc/clair-db:2020-06-20
      ports:
        - '5432:5432'
    clair:
