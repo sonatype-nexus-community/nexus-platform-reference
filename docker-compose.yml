@@ -16,7 +16,7 @@ services:
        - nexus
 
    nexus:
-     image: 'sonatype/nexus3:3.24.0'
+     image: 'sonatype/nexus3:3.25.0'
      volumes:
        - '~/.demo-pv/nexus-data:/nexus-data:delegated'
      ports:
@@ -24,7 +24,7 @@ services:
        - '18443:18443'
 
    iq-server:
-     image: 'sonatype/nexus-iq-server:1.94.0'
+     image: 'sonatype/nexus-iq-server:1.95.0'
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
        - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated'
@@ -54,19 +54,19 @@ services:
        - '50000:50000'
 
 # Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
-   clair-db:
-     # near-daily updates https://hub.docker.com/r/arminc/clair-db/tags
-     image: arminc/clair-db:2020-06-20
-     ports:
-       - '5432:5432'
-   clair:
-     image: arminc/clair-local-scan:latest
-     ports:
-       - '6060:6060'
-     links:
-       - clair-db:postgres
-     depends_on:
-       - clair-db
+  #  clair-db:
+  #    # near-daily updates https://hub.docker.com/r/arminc/clair-db/tags
+  #    image: arminc/clair-db:2020-06-20
+  #    ports:
+  #      - '5432:5432'
+  #  clair:
+  #    image: arminc/clair-local-scan:latest
+  #    ports:
+  #      - '6060:6060'
+  #    links:
+  #      - clair-db:postgres
+  #    depends_on:
+  #      - clair-db
 
 ## Webhook listener
 #    listener:
@@ -87,38 +87,38 @@ services:
 #        - -hooks=/etc/webhook/quay-consume.json
 
   ## Anchore
-  #  anchore-engine:
-  #    image: docker.io/anchore/anchore-engine:latest
-  #    #privileged: true
-  #    depends_on:
-  #      - anchore-db
-  #    ports:
-  #      - "8228:8228"
-  #      - "8338:8338"
-  #    volumes:
-  #      - ~/.demo-pv/aevolume/config:/config/:z
-  #    logging:
-  #      driver: "json-file"
-  #      options:
-  #        max-size: 100m
-  #    environment:
-  #     # NOTE: this should be set to the same name as this service (e.g. anchore-engine)
-  #      - ANCHORE_HOST_ID=dockerhostid-anchore-engine
-  #      - ANCHORE_ENDPOINT_HOSTNAME=anchore-engine
-  #  anchore-db:
-  #    image: "postgres:9"
-  #    volumes:
-  #      - ~/.demo-pv/aevolume/db:/var/lib/postgresql/data/pgdata/:z
-  #    environment:
-  #      - POSTGRES_PASSWORD=mysecretpassword
-  #      - PGDATA=/var/lib/postgresql/data/pgdata/
-  #    logging:
-  #      driver: "json-file"
-  #      options:
-  #        max-size: 100m
-  #    #uncomment to expose a port to allow direct/external access to the DB, for debugging
-  #    #ports:
-  #    # - "2345:5432"
+   anchore-engine:
+     image: docker.io/anchore/anchore-engine:latest
+     #privileged: true
+     depends_on:
+       - anchore-db
+     ports:
+       - "8228:8228"
+       - "8338:8338"
+     volumes:
+       - ~/.demo-pv/aevolume/config:/config/:z
+     logging:
+       driver: "json-file"
+       options:
+         max-size: 100m
+     environment:
+      # NOTE: this should be set to the same name as this service (e.g. anchore-engine)
+       - ANCHORE_HOST_ID=dockerhostid-anchore-engine
+       - ANCHORE_ENDPOINT_HOSTNAME=anchore-engine
+   anchore-db:
+     image: "postgres:9"
+     volumes:
+       - ~/.demo-pv/aevolume/db:/var/lib/postgresql/data/pgdata/:z
+     environment:
+       - POSTGRES_PASSWORD=mysecretpassword
+       - PGDATA=/var/lib/postgresql/data/pgdata/
+     logging:
+       driver: "json-file"
+       options:
+         max-size: 100m
+     #uncomment to expose a port to allow direct/external access to the DB, for debugging
+     #ports:
+     # - "2345:5432"
 
   ## Go
   #  athens:
@@ -138,24 +138,24 @@ services:
 
 ## Fortify on-premise integration
    #The Integration Service connects IQ to Fortify SSC
-  #  intSvc:
-  #    image: 'cmyanko/nexus-ssc-integration:19.1.0.12'
-  #    build: ./intSvc
-  #    depends_on:
-  #      - ssc
-  #      - iq-server
-  #    ports:
-  #      - '8182:8182'
-  #    volumes:
-  #      - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work:delegated'
+   intSvc:
+     image: 'cmyanko/nexus-ssc-integration:19.1.0.12'
+     build: ./intSvc
+     depends_on:
+       - ssc
+       - iq-server
+     ports:
+       - '8182:8182'
+     volumes:
+       - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work:delegated'
 
   #  # The SSC container is a private container for Microfocus and Sonatype employees
   #  # for use in Demo's and PoC's    
-  #  ssc:
-  #     image: 'fortifydocker/sscdemo'
-  #     ports:
-  #      - '8888:8080'
-  #     volumes:
-  #      - '~/.demo-pv/fortify:/fortify:delegated'
-  #     environment:
-  #      - SSC_MAX_MEM_MB=4096
+   ssc:
+      image: 'fortifydocker/sscdemo'
+      ports:
+       - '8888:8080'
+      volumes:
+       - '~/.demo-pv/fortify:/fortify:delegated'
+      environment:
+       - SSC_MAX_MEM_MB=4096
