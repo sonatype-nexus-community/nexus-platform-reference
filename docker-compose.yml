@@ -139,7 +139,7 @@ services:
 ## Fortify on-premise integration
    #The Integration Service connects IQ to Fortify SSC
    intSvc:
-     image: 'cmyanko/nexus-ssc-integration:19.1.0.12'
+     image: 'cmyanko/nexus-ssc-integration:20.1.0.22'
      build: ./intSvc
      depends_on:
        - ssc
