@@ -10,7 +10,7 @@ The rest of the defaults are set to work for the demo environment assuming you s
 
 ## Non-Docker Environment
 
-If you want to run this JAR the old fashioned way, the files you need are in teh 'files' folder in addition to the Parser plugin in the SSC folder.
+If you want to run this JAR the old fashioned way, the files you need are in the 'files' folder in addition to the Parser plugin in the SSC folder.
 
 Modify the start script to reference the JAR (it's renamed when copied into the container to simplify things so gthe script references IntSvc.jar instead of the full name.
 
