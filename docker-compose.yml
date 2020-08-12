@@ -152,7 +152,7 @@ services:
   #  # The SSC container is a private container for Microfocus and Sonatype employees
   #  # for use in Demo's and PoC's    
    ssc:
-      image: 'fortifydocker/sscdemo:19.2.0'
+      image: 'fortifydocker/sscdemo:20.1.0'
       ports:
        - '8888:8080'
       volumes:
