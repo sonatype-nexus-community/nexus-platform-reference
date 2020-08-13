@@ -16,7 +16,7 @@ services:
        - nexus
 
    nexus:
-     image: 'sonatype/nexus3:3.25.1'
+     image: 'sonatype/nexus3:3.26.1'
      volumes:
        - '~/.demo-pv/nexus-data:/nexus-data:delegated'
      ports:
