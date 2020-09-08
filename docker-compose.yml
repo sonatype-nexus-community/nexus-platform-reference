@@ -17,6 +17,10 @@ services:
 
    nexus:
      image: 'sonatype/nexus3:3.26.1'
+     environment:
+       BASE_URL: 'http://nexus'
+       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
+       #NEXUS_CASC_CONFIG: '/opt/nexus.yml'
      volumes:
        - '~/.demo-pv/nexus-data:/nexus-data:delegated'
      ports:
@@ -25,6 +29,8 @@ services:
 
    iq-server:
      image: 'sonatype/nexus-iq-server:1.97.0'
+     environment:
+       BASE_URL: 'http://iq-server'     
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
        - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated'

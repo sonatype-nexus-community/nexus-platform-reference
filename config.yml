@@ -10,7 +10,7 @@ sonatypeWork: /sonatype-work
 
 # Base URL of the Sonatype CLM server for user facing links back to the server.
 # If a mail server is configured, then the baseUrl setting must also be enabled and correct as otherwise notification emails cannot be sent.
-baseUrl: http://iq-server
+baseUrl: http://localhost:8071
 
 # Hour of the day(0-23) to schedule Policy Monitoring execution. The default is midnight.
 #policyMonitoringHour: 0
