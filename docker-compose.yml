@@ -35,6 +35,7 @@ services:
      ports:
        - '8081:8081'
        - '18443:18443'
+       - '5000:5000'
 
    iq-server:
      image: 'sonatype/nexus-iq-server:1.97.0'
