@@ -150,7 +150,7 @@ repository:
         docker:
           forceBasicAuth: false  # Do not permit anonymous access to this repository
           v1Enabled: true
-          httpPort: 18443   # Uncomment to activate
+          #httpPort: 18443   # Uncomment to activate
           #httpsPort: 8083  # Requires Nexus Jetty be configured to use SSL Certificates
         storage:
           blobStoreName: docker
@@ -197,7 +197,9 @@ repository:
       attributes:
         docker:
           forceBasicAuth: false  # Each repo uses its own setting
-          v1Enabled: true
+          v1Enabled: fasle
+          httpPort: 18443   # Uncomment to activate
+          #httpsPort: 8083  # Requires Nexus Jetty be configured to use SSL Certificates
         storage:
           blobStoreName: docker
           strictContentTypeValidation: true

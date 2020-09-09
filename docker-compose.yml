@@ -21,7 +21,7 @@ services:
        - nexus
 
    nexus:
-     image: 'sonatype/nexus3:3.26.1'
+     image: 'sonatype/nexus3:3.27.0'
      environment:
        BASE_URL: 'http://nexus'
        NEXUS_SECURITY_RANDOMPASSWORD: 'false'
@@ -31,7 +31,7 @@ services:
      volumes:
        - '~/.demo-pv/nexus-data:/nexus-data:delegated'
        #- './nexus-casc/demo-nexus.yml:/opt/nexus.yml:ro'
-       #- './nexus-casc/nexus-casc-plugin-3.26.1-02-bundle.kar:/opt/sonatype/nexus/deploy/nexus-casc-plugin-bundle.kar:delegated'
+       #- './nexus-casc/nexus-casc-plugin-3.27.0-03-bundle.kar:/opt/sonatype/nexus/deploy/nexus-casc-plugin-bundle.kar:delegated'
      ports:
        - '8081:8081'
        - '18443:18443'
