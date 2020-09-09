@@ -1,5 +1,0 @@
-{
-  "name": "Maven",
-  "type": "groovy",
-  "content": "repository.createFileBlobStore('maven-internal'); repository.createMavenGroup('maven-all', ['maven-releases', 'maven-snapshots', 'maven-central', 'maven-internal'] )"
-}
