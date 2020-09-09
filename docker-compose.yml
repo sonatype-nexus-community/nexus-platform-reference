@@ -7,7 +7,7 @@ secrets:
 services:
    demo:
      build: ./nginx
-     image: 'sonatype-se/sonatype_nginx-proxy:2.6.4'
+     image: 'sonatype-se/sonatype_nginx-proxy:2.6.5'
      ports:
        - '443:443'
        - '5000:5000'
@@ -34,8 +34,6 @@ services:
        #- './nexus-casc/nexus-casc-plugin-3.27.0-03-bundle.kar:/opt/sonatype/nexus/deploy/nexus-casc-plugin-bundle.kar:delegated'
      ports:
        - '8081:8081'
-       - '18443:18443'
-       - '5000:5000'
 
    iq-server:
      image: 'sonatype/nexus-iq-server:1.97.0'
