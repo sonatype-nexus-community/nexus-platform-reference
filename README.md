@@ -22,7 +22,7 @@ But I highly reccomend you use VSCode with the Docker extension installed as it 
 - Nexus Repo Web UI over http via http://localhost:8081
 - Nexus IQ Server accessible via http://localhost:8070 or https://iq-server
 - Docker proxy group registry accessible via https://registry
-- Docker Private Registry accessible via https://registry:5000  (docker push, not browser. Don't forget to docker login, I always do ;-)
+- Docker Private Registry accessible via registry:5000  (docker push, not browser. Don't forget to docker login, I always do ;-)
 
  _NOTE: I'm using a self-signed cert so you'll need to click past tha the first time using HTTPS. Chrome can be particularly difficult but this [article](https://medium.com/@dblazeski/chrome-bypass-net-err-cert-invalid-for-development-daefae43eb12) can help_
 
