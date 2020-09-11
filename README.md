@@ -5,7 +5,7 @@ This is a template for deploying Nexus Repository Manager and Nexus IQ Server be
 I also add a few aliases to my /etc/hosts file to simulate DNS from outside of docker host but the apps are accessible over http wtihout them. If you're on Windows the file is here, c:\windows\system32\drivers\etc\hosts.
 
 ```
-127.0.0.1      localhost iq-server nexus registry.mycompany.com jira jenkins ssc
+127.0.0.1      localhost iq-server nexus registry jira jenkins ssc
 ```
 
 ## Operations
@@ -21,8 +21,8 @@ But I highly reccomend you use VSCode with the Docker extension installed as it 
 - Nexus Repo Web UI with SSL accessible via https://nexus
 - Nexus Repo Web UI over http via http://localhost:8081
 - Nexus IQ Server accessible via http://localhost:8070 or https://iq-server
-- Docker proxy group registry accessible via https://registry.mycompany.com
-- Docker Private Registry accessible via https://registry.mycompany.com:5000  (docker push, not browser. Don't forget to docker login, I always do ;-)
+- Docker proxy group registry accessible via https://registry
+- Docker Private Registry accessible via https://registry:5000  (docker push, not browser. Don't forget to docker login, I always do ;-)
 
  _NOTE: I'm using a self-signed cert so you'll need to click past tha the first time using HTTPS. Chrome can be particularly difficult but this [article](https://medium.com/@dblazeski/chrome-bypass-net-err-cert-invalid-for-development-daefae43eb12) can help_
 
