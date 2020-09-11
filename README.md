@@ -81,7 +81,7 @@ Subsequent runs can use docker-compose to start the 'demo' service which is ngin
 docker-compose up -d demo      #Starts NXRM and IQ with nginx because of the 'depends on' parameter
 ```
 
-One of the advantages of docker-compose, in addition to all the typing it saves, when you run 'docker-compose down' it cleans up everything as well. It both stops and removes all of the containers and finishes by removing the network it created.
+One of the advantages of docker-compose, in addition to all the typing it saves with it's configuration as code approach, when you run 'docker-compose down' it cleans up everything as well. It both stops and removes all of the containers and finishes by removing the network it created.
 
 ```
 ➜ docker-compose down                                                            
@@ -99,8 +99,8 @@ Removing network npr_default
 If your more of a CLI person, here are all of the commands you'd have to run to recreate what 'docker-compose up -d demo does:
 ```
 docker network create npr_default
-docker run --network=npr_default -v ~/.demo-pv/nexus-data:/nexus-data -p 8081:8081 -p 18443:18443 sonatype/nexus3:3.23.0
-docker run --network=npr_default -v ~/.demo-pv/iq-data:/sonatype-work -v ~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log -v .:/etc/nexus-iq-server/ -p 8070:8070 -p 8071:8071 sonatype/nexus-iq-server:1.91.0
+docker run --network=npr_default -v ~/.demo-pv/nexus-data:/nexus-data -p 8081:8081 -p 18443:18443 sonatype/nexus3:3.27.0
+docker run --network=npr_default -v ~/.demo-pv/iq-data:/sonatype-work -v ~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log -v .:/etc/nexus-iq-server/ -p 8070:8070 -p 8071:8071 sonatype/nexus-iq-server:1.97.0
 docker run --network=npr_default -p 443:443 -p 5000:5000 -p 8011:8011 sonatype-se/sonatype_nginx-proxy:2.6.3 <-- Note- this needs to be built and tagged first
 ```
 #### SSL Certificates

@@ -72,21 +72,21 @@ security:
       roles:
         - source: "default"
           role: repository-read-docker
-    - username: johndoe
-      firstName: John
-      lastName: Doe
-      password: "${file:/run/secrets/password_johndoe}"
+    - username: newadmin
+      firstName: New
+      lastName: Admin
+      password: "${file:/run/secrets/password_newadmin}"
       updateExistingPassword: true
-      email: johndoe@example.org
+      email: newadmin@example.org
       roles:
         - source: "default"
           role: nx-admin
-    - username: janedoe
-      firstName: Jane
-      lastName: Doe
+    - username: librarian
+      firstName: OSS
+      lastName: Librarian
       password: changeme
       updateExistingPassword: false
-      email: janedoe@example.org
+      email: notadmin@example.org
       roles:
         - source: "default"
           role: repository-write-all
@@ -115,32 +115,37 @@ repository:
       format: ALL_FORMATS
       notes: ''
       criteria:
-        lastDownloaded: 864000
+        lastDownloaded: 2592000
     - name: cleanup-docker-proxy
       format: docker
       notes: ''
       criteria:
-        lastDownloaded: 864000
+        lastDownloaded: 2592000
     - name: cleanup-maven-proxy
       format: maven2
       notes: ''
       criteria:
-        lastDownloaded: 864000
+        lastDownloaded: 2592000
     - name: cleanup-npm-proxy
       format: npm
       notes: ''
       criteria:
-        lastDownloaded: 864000
+        lastDownloaded: 2592000
     - name: cleanup-nuget-proxy
       format: nuget
       notes: ''
       criteria:
-        lastDownloaded: 864000
+        lastDownloaded: 2592000
     - name: cleanup-pypi-proxy
       format: pypi
       notes: ''
       criteria:
-        lastDownloaded: 864000
+        lastDownloaded: 2592000
+    - name: cleanup-rubygems-proxy
+      format: rubygems
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
   pruneRepositories: true
   repositories:
     - name: docker-hosted
@@ -149,7 +154,7 @@ repository:
       attributes:
         docker:
           forceBasicAuth: false  # Do not permit anonymous access to this repository
-          v1Enabled: true
+          v1Enabled: false
           #httpPort: 18443   # Uncomment to activate
           #httpsPort: 8083  # Requires Nexus Jetty be configured to use SSL Certificates
         storage:
@@ -197,7 +202,7 @@ repository:
       attributes:
         docker:
           forceBasicAuth: false  # Each repo uses its own setting
-          v1Enabled: fasle
+          v1Enabled: false
           httpPort: 5000   # Uncomment to activate
           #httpsPort: 8083  # Requires Nexus Jetty be configured to use SSL Certificates
         storage:
@@ -478,7 +483,7 @@ repository:
           memberNames:
             - "nuget-hosted"
             - "nuget-proxy"
-
+    # https://help.sonatype.com/repomanager3/formats/pypi-repositories
     - name: pypi-proxy
       online: true
       recipeName: pypi-proxy
@@ -520,3 +525,45 @@ repository:
           memberNames:
             - "pypi-hosted"
             - "pypi-proxy"
+    # https://help.sonatype.com/repomanager3/formats/rubygems-repositories
+    - name: rubygems-proxy
+      online: true
+      recipeName: rubygems-proxy
+      attributes:
+        proxy:
+          remoteUrl: https://rubygems.org/
+          contentMaxAge: -1.0
+          metadataMaxAge: 1440.0
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        negativeCache:
+          enabled: true
+          timeToLive: 1440.0
+        cleanup:
+          policyName:
+            - cleanup-rubygems-proxy
+    - name: rubygems-hosted
+      online: true
+      recipeName: rubygems-hosted
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
+    - name: rubygems-group
+      online: true
+      recipeName: rubygems-group
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - "rubygems-hosted"
+            - "rubygems-proxy"
