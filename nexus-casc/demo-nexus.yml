@@ -155,7 +155,8 @@ repository:
         docker:
           forceBasicAuth: false  # Do not permit anonymous access to this repository
           v1Enabled: false
-          #httpPort: 18443   # Uncomment to activate
+          #Nexus OSS would set a port here, PRO users should set on the group
+          #httpPort: 5000   # Uncomment to activate
           #httpsPort: 8083  # Requires Nexus Jetty be configured to use SSL Certificates
         storage:
           blobStoreName: docker
@@ -203,6 +204,7 @@ repository:
         docker:
           forceBasicAuth: false  # Each repo uses its own setting
           v1Enabled: false
+          #PRO ONLY, otherwise set a port on the 'hosted' registry
           httpPort: 5000   # Uncomment to activate
           #httpsPort: 8083  # Requires Nexus Jetty be configured to use SSL Certificates
         storage:
