@@ -36,10 +36,10 @@ security:
       description: "Docker Anonymous Access for public proxy / group repositories"
       privileges:
         - nx-healthcheck-read
-        - nx-repository-view-docker-docker-browse
+        - nx-repository-view-docker-docker-all-browse
         - nx-repository-view-docker-docker-proxy-browse
         - nx-repository-view-docker-docker-proxy-read
-        - nx-repository-view-docker-docker-read
+        - nx-repository-view-docker-docker-all-read
         - nx-search-read
     - id: repository-read-all
       enabled: true
@@ -72,7 +72,7 @@ security:
       roles:
         - source: "default"
           role: repository-read-docker
-    - username: newadmin
+    - username: admin
       firstName: New
       lastName: Admin
       password: "${file:/run/secrets/password_newadmin}"
@@ -146,6 +146,12 @@ repository:
       notes: ''
       criteria:
         lastDownloaded: 2592000
+    - name: cleanup-helm-proxy
+      format: helm
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
+  # Repositories
   pruneRepositories: true
   repositories:
     - name: docker-hosted
@@ -569,3 +575,31 @@ repository:
           memberNames:
             - "rubygems-hosted"
             - "rubygems-proxy"
+    # https://help.sonatype.com/repomanager3/formats/helm-repositories
+    - name: sonatype-helm-proxy
+      online: true
+      recipeName: helm-proxy
+      attributes:
+        proxy:
+          remoteUrl: https://sonatype.github.io/helm3-charts/
+          contentMaxAge: -1.0
+          metadataMaxAge: 1440.0
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: docker
+          strictContentTypeValidation: true
+        cleanup:
+          policyName:
+            - cleanup-helm-proxy
+    - name: helm-hosted
+      online: true
+      recipeName: helm-hosted
+      attributes:
+        storage:
+          blobStoreName: docker
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
