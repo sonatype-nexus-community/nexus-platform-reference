@@ -221,6 +221,7 @@ repository:
           memberNames:
             - "docker-hosted"
             - "docker-proxy"
+          # PRO ONLY - set which hosted repo to pass a 'push' to
           WriteMember: docker-hosted
     #############
     # Maven
