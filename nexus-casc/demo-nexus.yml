@@ -10,7 +10,6 @@ capabilities:
     enabled: true
 security:
   anonymousAccess: true
-  pruneUsers: false
   realms:
     - name: "DockerToken"
       enabled: true
@@ -62,6 +61,7 @@ security:
         - nx-healthcheck-read
         - nx-repository-view-*-*-*
         - nx-search-read
+  pruneUsers: false
   users:
     - username: anonymous
       firstName: Anonymous
@@ -109,6 +109,7 @@ repository:
         blobStoreQuotaConfig:
           quotaLimitBytes: 10240000000
           quotaType: spaceUsedQuota
+  # Cleanup Policies
   pruneCleanupPolicies: true
   cleanupPolicies:
     - name: cleanup-everything
@@ -220,6 +221,10 @@ repository:
           memberNames:
             - "docker-hosted"
             - "docker-proxy"
+          WriteMember: docker-hosted
+    #############
+    # Maven
+    #############
     - name: maven-snapshots
       online: true
       recipeName: maven2-hosted
@@ -404,6 +409,9 @@ repository:
             - "Alfresco"
         storage:
           blobStoreName: oss-components
+    ###########
+    #  NPM
+    ###########
     - name: npm-hosted
       online: true
       recipeName: npm-hosted
@@ -450,6 +458,9 @@ repository:
           memberNames:
             - "npm-proxy"
             - "npm-hosted"
+    ############
+    # NuGet
+    ############
     - name: nuget-proxy
       online: true
       recipeName: nuget-proxy
@@ -491,7 +502,9 @@ repository:
           memberNames:
             - "nuget-hosted"
             - "nuget-proxy"
-    # https://help.sonatype.com/repomanager3/formats/pypi-repositories
+    #########################################################################
+    # PyPi   https://help.sonatype.com/repomanager3/formats/pypi-repositories
+    #########################################################################
     - name: pypi-proxy
       online: true
       recipeName: pypi-proxy
@@ -533,7 +546,9 @@ repository:
           memberNames:
             - "pypi-hosted"
             - "pypi-proxy"
-    # https://help.sonatype.com/repomanager3/formats/rubygems-repositories
+    ######################################################################
+    # Rubygems   https://help.sonatype.com/repomanager3/formats/rubygems-repositories
+    ######################################################################
     - name: rubygems-proxy
       online: true
       recipeName: rubygems-proxy
@@ -575,7 +590,9 @@ repository:
           memberNames:
             - "rubygems-hosted"
             - "rubygems-proxy"
-    # https://help.sonatype.com/repomanager3/formats/helm-repositories
+    ######################################
+    # Helm3 https://help.sonatype.com/repomanager3/formats/helm-repositories
+    ######################################
     - name: sonatype-helm-proxy
       online: true
       recipeName: helm-proxy
