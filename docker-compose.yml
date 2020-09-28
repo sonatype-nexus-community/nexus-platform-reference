@@ -41,7 +41,7 @@ services:
        - '8081:8081'
 
    iq-server:
-     image: 'sonatype/nexus-iq-server:1.98.0'
+     image: 'sonatype/nexus-iq-server:1.99.0'
      environment:
        BASE_URL: 'http://iq-server'     
      volumes:
@@ -52,7 +52,7 @@ services:
        - '8070:8070' 
        - '8071:8071'
 
-# see Nexus IQ for Jira https://help.sonatype.com/integrations/nexus-iq-for-jira
+   ## see Nexus IQ for Jira https://help.sonatype.com/integrations/nexus-iq-for-jira
    jira:
      image: 'atlassian/jira-software:8.5.3' # https://hub.docker.com/r/atlassian/jira-software
      volumes:
@@ -60,8 +60,8 @@ services:
      ports:
        - '8080:8080'
 
-# Docker based build jobs that want to use NXRM need to be outside of docker
-# network so they can hit the Nginx server for ingress and routing.      
+   ## Docker based build jobs that want to use NXRM need to be outside of docker
+   ## network so they can hit the Nginx server for ingress and routing.      
    jenkins:
      image: jenkinsci/blueocean # https://hub.docker.com/r/jenkinsci/blueocean
      user: root
@@ -72,7 +72,7 @@ services:
        - '9080:8080'
        - '50000:50000'
 
-# Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
+## Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
   #  clair-db:
   #    # near-daily updates https://hub.docker.com/r/arminc/clair-db/tags
   #    image: arminc/clair-db:2020-06-20
