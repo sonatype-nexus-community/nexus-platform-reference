@@ -49,7 +49,15 @@ It can take a minute or two to start. To view the logs I tend to use Kitematic o
 
 You'll need to ge the password from ~/.demo-pv/nexus-data to log in the first time.
 
+To auto-install a license you can put yours in your home flder and update the docker compose file to match it's name.
+
+#### Configuration as Code Plugin
+
 Optionally you can uncomment the NEXUS_CASC_CONFIG environment variable to do a bunch of config as well as set the admin user to admin/admin. You can change that password by updating the password_newadmin file.
+
+This plugin will use the demo-nexus.yml file in the nexus-casc folder and it will configure blobstores, repositories, users...
+
+It currently remove the default blobstore and repos then create two new blobstores (docker & oss-components), cleanup policies, repos and groups for Maven, NPM, Ruby, Python, NuGet, Helm, and Docker and enable push-to-group support in docker (NXRM PRO-only)
 
 #### Now lets start IQ
 ```
@@ -69,7 +77,7 @@ docker-compose up -d demo
 ```
 This container makes it's own self-signed cert so you'll have to push past the warning in your browser. If Chrome doesn't want to let you past you just need to click on the window and type "thisisusafe" ENTER.
 
-You should now have a fully functioning Nexus Platform
+You should now have a fully functioning Nexus Platform!
 
 To stop, use docker-compose:
 
