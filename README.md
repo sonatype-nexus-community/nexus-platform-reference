@@ -24,11 +24,11 @@ But I highly reccomend you use VSCode with the Docker extension installed as it 
 - Docker proxy group registry accessible via https://registry
 - Docker Private Registry accessible via registry:5000  (docker push, not browser. Don't forget to docker login, I always do ;-)
 
- _NOTE: I'm using a self-signed cert so you'll need to click past tha the first time using HTTPS. Chrome can be particularly difficult but this [article](https://medium.com/@dblazeski/chrome-bypass-net-err-cert-invalid-for-development-daefae43eb12) can help_
+ _NOTE: I'm using a self-signed cert so you'll need to click past tha the first time using HTTPS. Chrome can be particularly difficult but this [article](https://medium.com/@dblazeski/chrome-bypass-net-err-cert-invalid-for-development-daefae43eb12) can help. Essentially just type 'thisisunsafe' in while on the eror page in chome_
 
 #### Persistent Volumes
 
-One last thing before we get started. I've created a convention of putting all of the persistent volumes in a hidden folder in my home folder. This where you'll find the persistent volumes for most everything except Jenkins which uses the ~/.jenkins folder for setting and workspaces. If you can't see these hidden folders in your Finder, press Command+Shift+Period to toggle on/off
+One last thing before we get started. I've created a convention of putting all of the persistent volumes in a hidden folder in my home folder. This where you'll find the persistent volumes for most everything except Jenkins which uses the ~/.jenkins folder for settings and workspaces. If you can't see these hidden folders in your Finder, press Command+Shift+Period to toggle on/off
 ```
 ~/.demo-pv
   + /iq-data
@@ -48,6 +48,8 @@ docker-compose up -d nexus   #Start just the 'nexus' service
 It can take a minute or two to start. To view the logs I tend to use Kitematic or via the Docker extension in VSCode. Once it is started you should be able to hit it via http://localhost:8081 or if you've updated your /etc/hosts file, http://nexus:8081. Nginx isn't running yet so we can do https with SSL yet.
 
 You'll need to ge the password from ~/.demo-pv/nexus-data to log in the first time.
+
+Optionally you can uncomment the NEXUS_CASC_CONFIG environment variable to do a bunch of config as well as set the admin user to admin/admin. You can change that password by updating the password_newadmin file.
 
 #### Now lets start IQ
 ```
