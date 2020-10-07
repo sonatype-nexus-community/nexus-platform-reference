@@ -41,7 +41,7 @@ services:
        - '8081:8081'
 
    iq-server:
-     image: 'sonatype/nexus-iq-server:1.99.0'
+     image: 'sonatype/nexus-iq-server:1.100.0'
      environment:
        BASE_URL: 'http://iq-server'     
      volumes:
