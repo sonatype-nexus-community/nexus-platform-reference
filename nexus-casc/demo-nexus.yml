@@ -6,8 +6,40 @@ core:
   # TODO: allow to have a list here...
   nonProxyHosts: ${NO_PROXY:""}
 capabilities:
-  - type: OutreachManagementCapability
+  ## Turn on Firewall (clm) and add it to some proxies
+  - type: clm
     enabled: true
+    attributes:
+      url: "http://iq-server:8070"
+      authenticationType: "USER"
+      username: "admin"
+      password: "admin"
+      showLink: true
+  - type: firewall.audit
+    enabled: true
+    attributes:
+      repository: "maven-central"
+      quarantine: true
+  - type: firewall.audit
+    enabled: true
+    attributes:
+      repository: "apache-releases"
+      quarantine: true
+  - type: firewall.audit
+    enabled: true
+    attributes:
+      repository: "npm-proxy"
+      quarantine: true
+  - type: firewall.audit
+    enabled: true
+    attributes:
+      repository: "pypi-proxy"
+      quarantine: true
+  - type: firewall.audit
+    enabled: true
+    attributes:
+      repository: "rubygems-proxy"
+      quarantine: true
 security:
   anonymousAccess: true
   realms:
@@ -459,6 +491,8 @@ repository:
           memberNames:
             - "npm-proxy"
             - "npm-hosted"
+          # PRO ONLY - set which hosted repo to pass a 'publish' to
+          groupWriteMember: npm-hosted
     ############
     # NuGet
     ############

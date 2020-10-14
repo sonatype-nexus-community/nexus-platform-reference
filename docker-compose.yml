@@ -21,7 +21,7 @@ services:
        - nexus
 
    nexus:
-     image: 'sonatype/nexus3:3.27.0'
+     image: 'sonatype/nexus3:3.28.0'
      environment:
        BASE_URL: 'http://nexus'
        NEXUS_SECURITY_RANDOMPASSWORD: 'false'
@@ -36,9 +36,10 @@ services:
        - '~/2020-sonatype-internal-nxrm-firewall-lifecycle-1000-users.lic:/2020-sonatype-license.lic'
       # CasC plugin, also uncomment above in environment: https://github.com/AdaptiveConsulting/nexus-casc-plugin
        - './nexus-casc/demo-nexus.yml:/opt/nexus.yml:ro'
-       - './nexus-casc/nexus-casc-plugin-3.27.0-03-bundle.kar:/opt/sonatype/nexus/deploy/nexus-casc-plugin-bundle.kar:delegated'
+       - './nexus-casc/nexus-casc-plugin-3.28.0-01-bundle.kar:/opt/sonatype/nexus/deploy/nexus-casc-plugin-bundle.kar:delegated'
      ports:
        - '8081:8081'
+       - '2480:2480'
 
    iq-server:
      image: 'sonatype/nexus-iq-server:1.100.0'
