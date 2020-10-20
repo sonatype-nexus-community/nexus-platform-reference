@@ -20,26 +20,6 @@ capabilities:
     attributes:
       repository: "maven-central"
       quarantine: true
-  - type: firewall.audit
-    enabled: true
-    attributes:
-      repository: "apache-releases"
-      quarantine: true
-  - type: firewall.audit
-    enabled: true
-    attributes:
-      repository: "npm-proxy"
-      quarantine: true
-  - type: firewall.audit
-    enabled: true
-    attributes:
-      repository: "pypi-proxy"
-      quarantine: true
-  - type: firewall.audit
-    enabled: true
-    attributes:
-      repository: "rubygems-proxy"
-      quarantine: true
 security:
   anonymousAccess: true
   realms:
