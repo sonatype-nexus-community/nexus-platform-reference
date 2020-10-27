@@ -9,7 +9,8 @@ sonatypeWork: /sonatype-work
 #licenseFile: ./license.lic
 
 # Base URL of the Sonatype CLM server for user facing links back to the server.
-baseUrl: https://iq-server
+# If a mail server is configured, then the baseUrl setting must also be enabled and correct as otherwise notification emails cannot be sent.
+#baseUrl: http://localhost:8070/
 
 # Hour of the day(0-23) to schedule Policy Monitoring execution. The default is midnight.
 #policyMonitoringHour: 0
@@ -150,6 +151,7 @@ logging:
     "org.eclipse.birt.report.engine.layout.pdf.font.FontConfigReader": WARN
     "org.eclipse.jetty": INFO
     "org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter": INFO   # WARNING: This reveals credentials at DEBUG level
+    "org.quartz": INFO
     "com.sonatype.insight.audit":
       appenders:
       - type: file

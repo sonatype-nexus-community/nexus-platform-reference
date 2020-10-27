@@ -1,0 +1,637 @@
+---
+core:
+  baseUrl: ${BASE_URL:"htps://nexus"}
+  httpProxy: ${HTTP_PROXY:""}
+  httpsProxy: ${HTTPS_PROXY:""}
+  # TODO: allow to have a list here...
+  nonProxyHosts: ${NO_PROXY:""}
+capabilities:
+  ## Turn on Firewall (clm) and add it to some proxies
+  - type: clm
+    enabled: true
+    attributes:
+      url: "http://iq-server:8070"
+      authenticationType: "USER"
+      username: "admin"
+      password: "admin"
+      showLink: true
+  - type: firewall.audit
+    enabled: true
+    attributes:
+      repository: "maven-central"
+      quarantine: true
+security:
+  anonymousAccess: true
+  realms:
+    - name: "DockerToken"
+      enabled: true
+    - name: "NpmToken"
+      enabled: true
+    - name: "NuGetApiKey"
+      enabled: true
+  privileges:
+    - id: system-repository-admin-docker-docker-proxy-update
+      enabled: true
+      name: system-repository-admin-docker-docker-proxy-update
+      description: Permit update to docker-proxy repository configuration
+      type: repository-admin
+      properties:
+        format: docker
+        repository: docker-proxy
+        actions: read,update
+  roles:
+    - id: repository-read-docker
+      enabled: true
+      source: default
+      name: repository-read-docker
+      description: "Docker Anonymous Access for public proxy / group repositories"
+      privileges:
+        - nx-healthcheck-read
+        - nx-repository-view-docker-docker-all-browse
+        - nx-repository-view-docker-docker-proxy-browse
+        - nx-repository-view-docker-docker-proxy-read
+        - nx-repository-view-docker-docker-all-read
+        - nx-search-read
+    - id: repository-read-all
+      enabled: true
+      source: default
+      name: repository-read-all
+      description: "Read All permission for repositories"
+      privileges:
+        - nx-apikey-all
+        - nx-healthcheck-read
+        - nx-repository-view-*-*-browse
+        - nx-repository-view-*-*-read
+        - nx-search-read
+    - id: repository-write-all
+      enabled: true
+      source: default
+      name: repository-write-all
+      description: "Write All permission for repositories"
+      privileges:
+        - nx-apikey-all
+        - nx-healthcheck-read
+        - nx-repository-view-*-*-*
+        - nx-search-read
+  pruneUsers: false
+  users:
+    - username: anonymous
+      firstName: Anonymous
+      lastName: User
+      password: anonymous
+      updateExistingPassword: false
+      email: anonymous@example.org
+      roles:
+        - source: "default"
+          role: repository-read-docker
+    - username: admin
+      firstName: New
+      lastName: Admin
+      password: "${file:/run/secrets/password_newadmin}"
+      updateExistingPassword: true
+      email: newadmin@example.org
+      roles:
+        - source: "default"
+          role: nx-admin
+    - username: librarian
+      firstName: OSS
+      lastName: Librarian
+      password: changeme
+      updateExistingPassword: false
+      email: notadmin@example.org
+      roles:
+        - source: "default"
+          role: repository-write-all
+repository:
+  pruneBlobStores: true
+  blobStores:
+    - name: docker
+      type: File
+      attributes:
+        file:
+          path: docker
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 10240000000
+          quotaType: spaceUsedQuota
+    - name: oss-components
+      type: File
+      attributes:
+        file:
+          path: oss-components
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 10240000000
+          quotaType: spaceUsedQuota
+  # Cleanup Policies
+  pruneCleanupPolicies: true
+  cleanupPolicies:
+    - name: cleanup-everything
+      format: ALL_FORMATS
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
+    - name: cleanup-docker-proxy
+      format: docker
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
+    - name: cleanup-maven-proxy
+      format: maven2
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
+    - name: cleanup-npm-proxy
+      format: npm
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
+    - name: cleanup-nuget-proxy
+      format: nuget
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
+    - name: cleanup-pypi-proxy
+      format: pypi
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
+    - name: cleanup-rubygems-proxy
+      format: rubygems
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
+    - name: cleanup-helm-proxy
+      format: helm
+      notes: ''
+      criteria:
+        lastDownloaded: 2592000
+  # Repositories
+  pruneRepositories: true
+  repositories:
+    - name: docker-hosted
+      online: true
+      recipeName: docker-hosted
+      attributes:
+        docker:
+          forceBasicAuth: false  # Do not permit anonymous access to this repository
+          v1Enabled: false
+          #Nexus OSS would set a port here, PRO users should set on the group
+          #httpPort: 5000   # Uncomment to activate
+          #httpsPort: 8083  # Requires Nexus Jetty be configured to use SSL Certificates
+        storage:
+          blobStoreName: docker
+          strictContentTypeValidation: true
+          writePolicy: ALLOW
+        cleanup:
+          policyName:
+            - None
+    - name: docker-proxy
+      online: true
+      recipeName: docker-proxy
+      attributes:
+        docker:
+          forceBasicAuth: false  # Allow anonymous access
+          v1Enabled: true
+        proxy:
+          remoteUrl: https://registry-1.docker.io
+          contentMaxAge: -1.0
+          metadataMaxAge: 1440.0
+        dockerProxy:
+          indexType: HUB
+          cacheForeignLayers: true
+          foreignLayerUrlWhitelist:
+            - '.*'
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: docker
+          strictContentTypeValidation: true
+        routingRules:
+          routingRuleId: null
+        negativeCache:
+          enabled: true
+          timeToLive: 1440.0
+        cleanup:
+          policyName:
+            - cleanup-docker-proxy
+    - name: docker-all
+      online: true
+      recipeName: docker-group
+      attributes:
+        docker:
+          forceBasicAuth: false  # Each repo uses its own setting
+          v1Enabled: false
+          #PRO ONLY, otherwise set a port on the 'hosted' registry
+          httpPort: 5000   # Uncomment to activate
+          #httpsPort: 8083  # Requires Nexus Jetty be configured to use SSL Certificates
+        storage:
+          blobStoreName: docker
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - "docker-hosted"
+            - "docker-proxy"
+          # PRO ONLY - set which hosted repo to pass a 'push' to
+          groupWriteMember: docker-hosted
+    #############
+    # Maven
+    #############
+    - name: maven-snapshots
+      online: true
+      recipeName: maven2-hosted
+      attributes:
+        maven:
+          versionPolicy: SNAPSHOT
+          layoutPolicy: STRICT
+        storage:
+          writePolicy: ALLOW
+          strictContentTypeValidation: true
+          blobStoreName: oss-components
+    - name: maven-releases
+      online: true
+      recipeName: maven2-hosted
+      attributes:
+        maven:
+          versionPolicy: RELEASE
+          layoutPolicy: STRICT
+        storage:
+          writePolicy: ALLOW_ONCE
+          strictContentTypeValidation: true
+          blobStoreName: oss-components
+    - name: maven-central
+      online: true
+      recipeName: maven2-proxy
+      attributes:
+        proxy:
+          contentMaxAge: -1
+          remoteUrl: https://repo1.maven.org/maven2/
+          metadataMaxAge: 1440
+        negativeCache:
+          timeToLive: 1440
+          enabled: true
+        storage:
+          strictContentTypeValidation: false
+          blobStoreName: oss-components
+        httpclient:
+          connection:
+            blocked: false
+            autoBlock: true
+        maven:
+          versionPolicy: RELEASE
+          layoutPolicy: PERMISSIVE
+        cleanup:
+          policyName:
+            - cleanup-maven-proxy
+    - name: Alfresco
+      online: true
+      recipeName: maven2-proxy
+      attributes:
+        proxy:
+          contentMaxAge: -1
+          remoteUrl: https://repo1.maven.org/maven2/
+          metadataMaxAge: 1440
+        negativeCache:
+          timeToLive: 1440
+          enabled: true
+        storage:
+          strictContentTypeValidation: false
+          blobStoreName: oss-components
+        httpclient:
+          connection:
+            blocked: false
+            autoBlock: true
+        maven:
+          versionPolicy: RELEASE
+          layoutPolicy: PERMISSIVE
+        cleanup:
+          policyName:
+            - cleanup-maven-proxy
+    - name: Shiboleth
+      online: true
+      recipeName: maven2-proxy
+      attributes:
+        proxy:
+          contentMaxAge: -1
+          remoteUrl: https://build.shibboleth.net/nexus/content/repositories/releases/
+          metadataMaxAge: 1440
+        negativeCache:
+          timeToLive: 1440
+          enabled: true
+        storage:
+          strictContentTypeValidation: false
+          blobStoreName: oss-components
+        httpclient:
+          connection:
+            blocked: false
+            autoBlock: true
+        maven:
+          versionPolicy: RELEASE
+          layoutPolicy: PERMISSIVE
+        cleanup:
+          policyName:
+            - cleanup-maven-proxy
+    - name: Mulesoft
+      online: true
+      recipeName: maven2-proxy
+      attributes:
+        proxy:
+          contentMaxAge: -1
+          remoteUrl: https://repository.mulesoft.org/releases/
+          metadataMaxAge: 1440
+        negativeCache:
+          timeToLive: 1440
+          enabled: true
+        storage:
+          strictContentTypeValidation: false
+          blobStoreName: oss-components
+        httpclient:
+          connection:
+            blocked: false
+            autoBlock: true
+        maven:
+          versionPolicy: RELEASE
+          layoutPolicy: PERMISSIVE
+        cleanup:
+          policyName:
+            - cleanup-maven-proxy
+    - name: Spring_Plugins
+      online: true
+      recipeName: maven2-proxy
+      attributes:
+        proxy:
+          contentMaxAge: -1
+          remoteUrl: https://repo.spring.io/plugins-release/
+          metadataMaxAge: 1440
+        negativeCache:
+          timeToLive: 1440
+          enabled: true
+        storage:
+          strictContentTypeValidation: false
+          blobStoreName: oss-components
+        httpclient:
+          connection:
+            blocked: false
+            autoBlock: true
+        maven:
+          versionPolicy: RELEASE
+          layoutPolicy: PERMISSIVE
+        cleanup:
+          policyName:
+            - cleanup-maven-proxy
+    - name: apache-releases
+      online: true
+      recipeName: maven2-proxy
+      attributes:
+        proxy:
+          contentMaxAge: -1
+          remoteUrl: https://repository.apache.org/content/repositories/releases/
+          metadataMaxAge: 1440
+        negativeCache:
+          timeToLive: 1440
+          enabled: true
+        storage:
+          strictContentTypeValidation: false
+          blobStoreName: oss-components
+        httpclient:
+          connection:
+            blocked: false
+            autoBlock: true
+        maven:
+          versionPolicy: RELEASE
+          layoutPolicy: PERMISSIVE
+        cleanup:
+          policyName:
+            - cleanup-maven-proxy
+    - name: maven-public
+      online: true
+      recipeName: maven2-group
+      attributes:
+        maven:
+          versionPolicy: MIXED
+        group:
+          memberNames:
+            - "maven-snapshots"
+            - "maven-releases"
+            - "maven-central"
+            - "apache-releases"
+            - "Spring_Plugins"
+            - "Mulesoft"
+            - "Shiboleth"
+            - "Alfresco"
+        storage:
+          blobStoreName: oss-components
+    ###########
+    #  NPM
+    ###########
+    - name: npm-hosted
+      online: true
+      recipeName: npm-hosted
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
+        cleanup:
+          policyName:
+            - None
+    - name: npm-proxy
+      online: true
+      recipeName: npm-proxy
+      attributes:
+        proxy:
+          remoteUrl: https://registry.npmjs.org
+          contentMaxAge: -1.0
+          metadataMaxAge: 1440.0
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        routingRules:
+          routingRuleId: null
+        negativeCache:
+          enabled: true
+          timeToLive: 1440.0
+        cleanup:
+          policyName:
+            - cleanup-npm-proxy
+    - name: npm
+      online: true
+      recipeName: npm-group
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - "npm-proxy"
+            - "npm-hosted"
+          # PRO ONLY - set which hosted repo to pass a 'publish' to
+          groupWriteMember: npm-hosted
+    ############
+    # NuGet
+    ############
+    - name: nuget-proxy
+      online: true
+      recipeName: nuget-proxy
+      attributes:
+        proxy:
+          remoteUrl: https://api.nuget.org/v3/index.json
+          contentMaxAge: -1.0
+          metadataMaxAge: 1440.0
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        negativeCache:
+          enabled: true
+          timeToLive: 1440.0
+        cleanup:
+          policyName:
+            - cleanup-nuget-proxy
+    - name: nuget-hosted
+      online: true
+      recipeName: nuget-hosted
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
+    - name: nuget
+      online: true
+      recipeName: nuget-group
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - "nuget-hosted"
+            - "nuget-proxy"
+    #########################################################################
+    # PyPi   https://help.sonatype.com/repomanager3/formats/pypi-repositories
+    #########################################################################
+    - name: pypi-proxy
+      online: true
+      recipeName: pypi-proxy
+      attributes:
+        proxy:
+          remoteUrl: https://pypi.org/
+          contentMaxAge: -1.0
+          metadataMaxAge: 1440.0
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        negativeCache:
+          enabled: true
+          timeToLive: 1440.0
+        cleanup:
+          policyName:
+            - cleanup-pypi-proxy
+    - name: pypi-hosted
+      online: true
+      recipeName: pypi-hosted
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
+    - name: pypi-group
+      online: true
+      recipeName: pypi-group
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - "pypi-hosted"
+            - "pypi-proxy"
+    ######################################################################
+    # Rubygems   https://help.sonatype.com/repomanager3/formats/rubygems-repositories
+    ######################################################################
+    - name: rubygems-proxy
+      online: true
+      recipeName: rubygems-proxy
+      attributes:
+        proxy:
+          remoteUrl: https://rubygems.org/
+          contentMaxAge: -1.0
+          metadataMaxAge: 1440.0
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        negativeCache:
+          enabled: true
+          timeToLive: 1440.0
+        cleanup:
+          policyName:
+            - cleanup-rubygems-proxy
+    - name: rubygems-hosted
+      online: true
+      recipeName: rubygems-hosted
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
+    - name: rubygems-group
+      online: true
+      recipeName: rubygems-group
+      attributes:
+        storage:
+          blobStoreName: oss-components
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - "rubygems-hosted"
+            - "rubygems-proxy"
+    ######################################
+    # Helm3 https://help.sonatype.com/repomanager3/formats/helm-repositories
+    ######################################
+    - name: sonatype-helm-proxy
+      online: true
+      recipeName: helm-proxy
+      attributes:
+        proxy:
+          remoteUrl: https://sonatype.github.io/helm3-charts/
+          contentMaxAge: -1.0
+          metadataMaxAge: 1440.0
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: docker
+          strictContentTypeValidation: true
+        cleanup:
+          policyName:
+            - cleanup-helm-proxy
+    - name: helm-hosted
+      online: true
+      recipeName: helm-hosted
+      attributes:
+        storage:
+          blobStoreName: docker
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE

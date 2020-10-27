@@ -1,8 +1,13 @@
-version: '3'
+version: '3.7'
+
+secrets:
+  password_newadmin:
+    file: ./nexus-casc/password_newadmin
+
 services:
    demo:
      build: ./nginx
-     image: 'sonatype-se/sonatype_nginx-proxy:2.6.3'
+     image: 'sonatype-se/sonatype_nginx-proxy:2.6.6'
      ports:
        - '443:443'
        - '5000:5000'
@@ -16,15 +21,30 @@ services:
        - nexus
 
    nexus:
-     image: 'sonatype/nexus3:3.25.0'
+     image: 'sonatype/nexus3:3.28.1'
+     environment:
+       BASE_URL: 'http://nexus'
+       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
+       ## This enable/disables the CasC plugin
+       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+     secrets:
+       - password_newadmin
      volumes:
        - '~/.demo-pv/nexus-data:/nexus-data:delegated'
+      ## For dynamic license install
+       - './nexus.properties:/nexus-data/etc/nexus.properties'
+       - '~/2020-sonatype-internal-nxrm-firewall-lifecycle-1000-users-ppp.lic:/2020-sonatype-license.lic'
+      # CasC plugin, also uncomment above in environment section: https://github.com/AdaptiveConsulting/nexus-casc-plugin
+       - './nexus-casc/demo-nexus.yml:/opt/nexus.yml:ro'
+       - './nexus-casc/nexus-casc-plugin-3.28.0-01-bundle.kar:/opt/sonatype/nexus/deploy/nexus-casc-plugin-bundle.kar:delegated'
      ports:
        - '8081:8081'
-       - '18443:18443'
+       - '2480:2480'
 
    iq-server:
-     image: 'sonatype/nexus-iq-server:1.95.0'
+     image: 'sonatype/nexus-iq-server:1.100.0'
+     environment:
+       BASE_URL: 'http://iq-server'     
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
        - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated'
@@ -33,14 +53,14 @@ services:
        - '8070:8070' 
        - '8071:8071'
 
-# see Nexus IQ for Jira https://help.sonatype.com/integrations/nexus-iq-for-jira
+   ## see Nexus IQ for Jira https://help.sonatype.com/integrations/nexus-iq-for-jira
    jira:
      image: 'atlassian/jira-software:8.5.3' # https://hub.docker.com/r/atlassian/jira-software
      volumes:
        - '~/.demo-pv/jira-data:/var/atlassian/application-data/jira:delegated'
      ports:
        - '8080:8080'
-       
+    
 # see Nexus IQ for Jira https://help.sonatype.com/integrations/nexus-iq-for-scm
 #####
   bitbucket:
@@ -50,9 +70,9 @@ services:
     ports:
       - '7990:7990'
       - '7999:7999'
-      
-# Docker based build jobs that want to use NXRM need to be outside of docker
-# network so they can hit the Nginx server for ingress and routing.      
+
+   ## Docker based build jobs that want to use NXRM need to be outside of docker
+   ## network so they can hit the Nginx server for ingress and routing.      
    jenkins:
      image: jenkinsci/blueocean # https://hub.docker.com/r/jenkinsci/blueocean
      user: root
@@ -63,7 +83,7 @@ services:
        - '9080:8080'
        - '50000:50000'
 
-# Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
+## Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
   #  clair-db:
   #    # near-daily updates https://hub.docker.com/r/arminc/clair-db/tags
   #    image: arminc/clair-db:2020-06-20
@@ -162,7 +182,7 @@ services:
   #  # The SSC container is a private container for Microfocus and Sonatype employees
   #  # for use in Demo's and PoC's    
    ssc:
-      image: 'fortifydocker/sscdemo:19.2.0'
+      image: 'fortifydocker/sscdemo:20.1.0'
       ports:
        - '8888:8080'
       volumes:

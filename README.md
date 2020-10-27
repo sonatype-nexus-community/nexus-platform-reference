@@ -5,7 +5,7 @@ This is a template for deploying Nexus Repository Manager and Nexus IQ Server be
 I also add a few aliases to my /etc/hosts file to simulate DNS from outside of docker host but the apps are accessible over http wtihout them. If you're on Windows the file is here, c:\windows\system32\drivers\etc\hosts.
 
 ```
-127.0.0.1      localhost iq-server nexus registry.mycompany.com jira jenkins ssc
+127.0.0.1      localhost iq-server nexus registry jira jenkins ssc
 ```
 
 ## Operations
@@ -21,14 +21,14 @@ But I highly reccomend you use VSCode with the Docker extension installed as it 
 - Nexus Repo Web UI with SSL accessible via https://nexus
 - Nexus Repo Web UI over http via http://localhost:8081
 - Nexus IQ Server accessible via http://localhost:8070 or https://iq-server
-- Docker proxy group registry accessible via https://registry.mycompany.com
-- Docker Private Registry accessible via https://registry.mycompany.com:5000  (docker push, not browser. Don't forget to docker login, I always do ;-)
+- Docker proxy group registry accessible via https://registry
+- Docker Private Registry accessible via registry:5000  (docker push, not browser. Don't forget to docker login, I always do ;-)
 
- _NOTE: I'm using a self-signed cert so you'll need to click past tha the first time using HTTPS. Chrome can be particularly difficult but this [article](https://medium.com/@dblazeski/chrome-bypass-net-err-cert-invalid-for-development-daefae43eb12) can help_
+ _NOTE: I'm using a self-signed cert so you'll need to click past tha the first time using HTTPS. Chrome can be particularly difficult but this [article](https://medium.com/@dblazeski/chrome-bypass-net-err-cert-invalid-for-development-daefae43eb12) can help. Essentially just type 'thisisunsafe' in while on the eror page in chome_
 
 #### Persistent Volumes
 
-One last thing before we get started. I've created a convention of putting all of the persistent volumes in a hidden folder in my home folder. This where you'll find the persistent volumes for most everything except Jenkins which uses the ~/.jenkins folder for setting and workspaces. If you can't see these hidden folders in your Finder, press Command+Shift+Period to toggle on/off
+One last thing before we get started. I've created a convention of putting all of the persistent volumes in a hidden folder in my home folder. This where you'll find the persistent volumes for most everything except Jenkins which uses the ~/.jenkins folder for settings and workspaces. If you can't see these hidden folders in your Finder, press Command+Shift+Period to toggle on/off
 ```
 ~/.demo-pv
   + /iq-data
@@ -49,6 +49,16 @@ It can take a minute or two to start. To view the logs I tend to use Kitematic o
 
 You'll need to ge the password from ~/.demo-pv/nexus-data to log in the first time.
 
+To auto-install a license you can put yours in your home flder and update the docker compose file to match it's name.
+
+#### Configuration as Code Plugin
+
+Optionally you can uncomment the NEXUS_CASC_CONFIG environment variable to do a bunch of config as well as set the admin user to admin/admin. You can change that password by updating the password_newadmin file.
+
+This plugin will use the demo-nexus.yml file in the nexus-casc folder and it will configure blobstores, repositories, users...
+
+It currently remove the default blobstore and repos then create two new blobstores (docker & oss-components), cleanup policies, repos and groups for Maven, NPM, Ruby, Python, NuGet, Helm, and Docker and enable push-to-group support in docker (NXRM PRO-only)
+
 #### Now lets start IQ
 ```
 ➜ docker-compose up -d iq-server
@@ -67,7 +77,7 @@ docker-compose up -d demo
 ```
 This container makes it's own self-signed cert so you'll have to push past the warning in your browser. If Chrome doesn't want to let you past you just need to click on the window and type "thisisusafe" ENTER.
 
-You should now have a fully functioning Nexus Platform
+You should now have a fully functioning Nexus Platform!
 
 To stop, use docker-compose:
 
@@ -81,7 +91,7 @@ Subsequent runs can use docker-compose to start the 'demo' service which is ngin
 docker-compose up -d demo      #Starts NXRM and IQ with nginx because of the 'depends on' parameter
 ```
 
-One of the advantages of docker-compose, in addition to all the typing it saves, when you run 'docker-compose down' it cleans up everything as well. It both stops and removes all of the containers and finishes by removing the network it created.
+One of the advantages of docker-compose, in addition to all the typing it saves with it's configuration as code approach, when you run 'docker-compose down' it cleans up everything as well. It both stops and removes all of the containers and finishes by removing the network it created.
 
 ```
 ➜ docker-compose down                                                            
@@ -99,8 +109,8 @@ Removing network npr_default
 If your more of a CLI person, here are all of the commands you'd have to run to recreate what 'docker-compose up -d demo does:
 ```
 docker network create npr_default
-docker run --network=npr_default -v ~/.demo-pv/nexus-data:/nexus-data -p 8081:8081 -p 18443:18443 sonatype/nexus3:3.23.0
-docker run --network=npr_default -v ~/.demo-pv/iq-data:/sonatype-work -v ~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log -v .:/etc/nexus-iq-server/ -p 8070:8070 -p 8071:8071 sonatype/nexus-iq-server:1.91.0
+docker run --network=npr_default -v ~/.demo-pv/nexus-data:/nexus-data -p 8081:8081 -p 18443:18443 sonatype/nexus3:3.27.0
+docker run --network=npr_default -v ~/.demo-pv/iq-data:/sonatype-work -v ~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log -v .:/etc/nexus-iq-server/ -p 8070:8070 -p 8071:8071 sonatype/nexus-iq-server:1.97.0
 docker run --network=npr_default -p 443:443 -p 5000:5000 -p 8011:8011 sonatype-se/sonatype_nginx-proxy:2.6.3 <-- Note- this needs to be built and tagged first
 ```
 #### SSL Certificates
