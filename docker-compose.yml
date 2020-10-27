@@ -26,7 +26,7 @@ services:
        BASE_URL: 'http://nexus'
        NEXUS_SECURITY_RANDOMPASSWORD: 'false'
        ## This enable/disables the CasC plugin
-       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+       #NEXUS_CASC_CONFIG: '/opt/nexus.yml'
      secrets:
        - password_newadmin
      volumes:
