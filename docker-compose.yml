@@ -60,6 +60,16 @@ services:
        - '~/.demo-pv/jira-data:/var/atlassian/application-data/jira:delegated'
      ports:
        - '8080:8080'
+    
+# see Nexus IQ for Jira https://help.sonatype.com/integrations/nexus-iq-for-scm
+#####
+  bitbucket:
+    image: 'atlassian/bitbucket-server:7.0.2-jdk11' # https://hub.docker.com/r/atlassian/bitbucket-server
+    volumes:
+      - '~/.demo-pv/bitbucket-data:/var/atlassian/application-data/bitbucketl:delegated'
+    ports:
+      - '7990:7990'
+      - '7999:7999'
 
    ## Docker based build jobs that want to use NXRM need to be outside of docker
    ## network so they can hit the Nginx server for ingress and routing.      
