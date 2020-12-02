@@ -25,16 +25,16 @@ services:
      environment:
        BASE_URL: 'http://nexus'
        NEXUS_SECURITY_RANDOMPASSWORD: 'false'
-       ## This enable/disables the CasC plugin
-       #NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+       ## This enables/disables the CasC plugin
+       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
      secrets:
        - password_newadmin
      volumes:
        - '~/.demo-pv/nexus-data:/nexus-data:delegated'
-      ## For dynamic license install
+       ## For dynamic license install
        - './nexus.properties:/nexus-data/etc/nexus.properties'
        - '~/2020-sonatype-internal-nxrm-firewall-lifecycle-1000-users-ppp.lic:/2020-sonatype-license.lic'
-      # CasC plugin, also uncomment above in environment section: https://github.com/AdaptiveConsulting/nexus-casc-plugin
+       # CasC plugin, also uncomment above in environment section: https://github.com/AdaptiveConsulting/nexus-casc-plugin
        - './nexus-casc/demo-nexus.yml:/opt/nexus.yml:ro'
        - './nexus-casc/nexus-casc-plugin-3.28.0-01-bundle.kar:/opt/sonatype/nexus/deploy/nexus-casc-plugin-bundle.kar:delegated'
      ports:
@@ -42,7 +42,7 @@ services:
        - '2480:2480'
 
    iq-server:
-     image: 'sonatype/nexus-iq-server:1.100.0'
+     image: 'sonatype/nexus-iq-server:1.103.0'
      environment:
        BASE_URL: 'http://iq-server'     
      volumes:
@@ -184,7 +184,11 @@ services:
       image: 'fortifydocker/sscdemo:20.1.0'
       ports:
        - '8888:8080'
+       ##This broke with docker desktop 2.5.0.0
       volumes:
-       - '~/.demo-pv/fortify:/fortify:delegated'
+       - ssc-data:/fortify
       environment:
        - SSC_MAX_MEM_MB=4096
+
+volumes:
+  ssc-data:
