@@ -21,7 +21,7 @@ services:
        - nexus
 
    nexus:
-     image: 'sonatype/nexus3:3.28.1'
+     image: 'sonatype/nexus3:3.29.0'
      environment:
        BASE_URL: 'http://nexus'
        NEXUS_SECURITY_RANDOMPASSWORD: 'false'
