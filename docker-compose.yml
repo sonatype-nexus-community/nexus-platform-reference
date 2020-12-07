@@ -48,7 +48,7 @@ services:
      volumes:
        - '~/.demo-pv/iq-data:/sonatype-work:delegated'
        - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated'
-       - './config.yml:/etc/nexus-iq-server/cnfig.yml:delegated'
+       - './config.yml:/etc/nexus-iq-server/config.yml:delegated'
      ports:
        - '8070:8070' 
        - '8071:8071'
