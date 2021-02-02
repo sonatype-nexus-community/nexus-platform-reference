@@ -21,7 +21,7 @@ services:
        - nexus
 
    nexus:
-     image: 'sonatype/nexus3:3.29.0'
+     image: 'sonatype/nexus3:3.29.2'
      environment:
        BASE_URL: 'http://nexus'
        NEXUS_SECURITY_RANDOMPASSWORD: 'false'
@@ -42,7 +42,7 @@ services:
        - '2480:2480'
 
    iq-server:
-     image: 'sonatype/nexus-iq-server:1.103.0'
+     image: 'sonatype/nexus-iq-server:1.104.0'
      environment:
        BASE_URL: 'http://iq-server'     
      volumes:
