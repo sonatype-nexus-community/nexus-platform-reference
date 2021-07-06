@@ -83,7 +83,7 @@ security:
       email: anonymous@example.org
       roles:
         - source: "default"
-          role: repository-read-docker
+          role: nx-anonymous
     - username: admin
       firstName: New
       lastName: Admin
