@@ -6,11 +6,11 @@
 sonatypeWork: /sonatype-work
 
 # Path to a license file to automatically install if unlicensed.
-#licenseFile: ./license.lic
+licenseFile: /sonatype-license.lic
 
 # Base URL of the Sonatype CLM server for user facing links back to the server.
 # If a mail server is configured, then the baseUrl setting must also be enabled and correct as otherwise notification emails cannot be sent.
-#baseUrl: http://localhost:8070/
+baseUrl: http://iq.localhost:8070
 
 # Hour of the day(0-23) to schedule Policy Monitoring execution. The default is midnight.
 #policyMonitoringHour: 0
@@ -220,3 +220,13 @@ logging:
 
 # Sample data is created for new installs.
 createSampleData: true
+
+#defaultBranchMonitoring:
+#  startTime: 12:50
+#  intervalInHours: 1
+
+# Undocumented feature flags to disable new continuous monitoring in version
+# 120
+features:
+  prCommentMonitoring: false
+  defaultBranchMonitoring: false

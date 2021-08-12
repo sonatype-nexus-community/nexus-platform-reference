@@ -18,11 +18,13 @@ task grabLatestCascPlugin(type: Copy) {
 apply plugin: 'docker-compose'
 
 dockerCompose {
-    simple {
-        useComposeFiles = ['compose-files/nexus-repository.yaml']
+    noReverseProxy {
+        useComposeFiles = ['compose-files/nexus-repository.yaml', 'compose-files/nexus-iq-server.yaml']
         environment.put 'DOCKER_ROOT_VOLUME_MOUNT_POINT', "$DOCKER_ROOT_VOLUME_MOUNT_POINT"
         environment.put 'NEXUS_CASC_PLUGIN_PATH', "$projectDir/lib/nexus-casc-plugin-bundle.kar"
         environment.put 'NEXUS_LICENSE_PATH', "$NEXUS_LICENSE_PATH"
+        environment.put "NEXUS_IQ_SERVER_VERSION", "$NEXUS_IQ_SERVER_VERSION"
+        environment.put "NEXUS_REPOSITORY_VERSION", "$NEXUS_REPOSITORY_VERSION"
     }
 }
 

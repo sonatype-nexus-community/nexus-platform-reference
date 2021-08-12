@@ -1,0 +1,21 @@
+version: '3.7'
+
+secrets:
+  admin_password:
+    file: ../config/admin_password
+
+services:
+  neuxs-iq-server:
+     image: 'sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}'
+     environment:
+       BASE_URL: 'http://iq.localhost:8070'
+     secrets:
+       - admin_password
+     volumes:
+       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated'
+       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated'
+       - '../config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated'
+       - '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
+     ports:
+       - '8070:8070' 
+       - '8071:8071'

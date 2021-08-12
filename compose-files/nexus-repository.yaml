@@ -5,12 +5,13 @@ secrets:
     file: ../config/admin_password
 
 services:
-  nexus:
-     image: 'sonatype/nexus3:3.33.0'
+  nexus-repository:
+     image: 'sonatype/nexus3:${NEXUS_REPOSITORY_VERSION:?err}'
      environment:
-       BASE_URL: 'http://nexus-repository'
+       BASE_URL: 'http://repo.localhost:8081'
        NEXUS_SECURITY_RANDOMPASSWORD: 'false'
        NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+       NEXUS_IQ_BASE_URL: 'http://iq.localhost:8070'
      secrets:
        - admin_password
      volumes:
