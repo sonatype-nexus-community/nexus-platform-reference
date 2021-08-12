@@ -1,4 +1,14 @@
+# Ignore .gradle
+.gradle*
+
+# Never commit any License Files
 *.lic
+
+# Never commit any Docker Volume data
+data/*
+
+# Never commit any libraries obtained and placed in lib directory
+lib/*
 
 #dockstation
 .env

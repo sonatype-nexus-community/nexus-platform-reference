@@ -1,0 +1,24 @@
+version: '3.7'
+
+secrets:
+  admin_password:
+    file: ../config/admin_password
+
+services:
+  nexus:
+     image: 'sonatype/nexus3:3.33.0'
+     environment:
+       BASE_URL: 'http://nexus-repository'
+       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
+       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+     secrets:
+       - admin_password
+     volumes:
+       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/nexus-data:/nexus-data:delegated'
+       - '../config/nexus-repo.properties:/nexus-data/etc/nexus.properties'
+       - '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
+       - '../config/nexus-repos-casc.yaml:/opt/nexus.yml:ro'
+       - '${NEXUS_CASC_PLUGIN_PATH:?err}:/opt/sonatype/nexus/deploy/nexus-casc-plugin-bundle.kar:delegated'
+     ports:
+       - '8081:8081'
+       - '2480:2480'

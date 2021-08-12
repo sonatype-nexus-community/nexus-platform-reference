@@ -1,0 +1,29 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.avast.gradle:gradle-docker-compose-plugin:$DOCKER_COMPOSE_PLUGIN_VERSION"
+        classpath "io.github.asharapov.nexus:nexus-casc-plugin:$NEXUS_CASC_PLUGIN_VERSION:bundle@kar"
+    }
+}
+
+task grabLatestCascPlugin(type: Copy) {
+    from buildscript.configurations.classpath
+    include "nexus-casc-plugin*"
+    rename ("nexus-casc-plugin-$NEXUS_CASC_PLUGIN_VERSION-bundle.kar", "nexus-casc-plugin-bundle.kar")
+    into "$projectDir/lib"
+}
+
+apply plugin: 'docker-compose'
+
+dockerCompose {
+    simple {
+        useComposeFiles = ['compose-files/nexus-repository.yaml']
+        environment.put 'DOCKER_ROOT_VOLUME_MOUNT_POINT', "$DOCKER_ROOT_VOLUME_MOUNT_POINT"
+        environment.put 'NEXUS_CASC_PLUGIN_PATH', "$projectDir/lib/nexus-casc-plugin-bundle.kar"
+        environment.put 'NEXUS_LICENSE_PATH', "$NEXUS_LICENSE_PATH"
+    }
+}
+
+dockerCompose.dependsOn(grabLatestCascPlugin)
