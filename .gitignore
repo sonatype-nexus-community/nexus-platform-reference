@@ -4,6 +4,9 @@
 # Never commit any License Files
 *.lic
 
+# Never commit any generated nGinx content
+config/nginx-www/*
+
 # Never commit any Docker Volume data
 data/*
 

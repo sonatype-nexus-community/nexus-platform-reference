@@ -76,7 +76,7 @@
                     <div>
                         <h2>Nexus Repository <span class="badge rounded-pill bg-success">$NEXUS_REPOSITORY_VERSION</span></h2>
                         <p>Universally manage binaries and artifacts (with HA and support if running Pro).</p>
-                        <a href="http://nexus-repository.localhost" target="_blank" class="btn btn-primary">
+                        <a href="http://repo.localhost" target="_blank" class="btn btn-primary">
                             Access Nexus Repository
                         </a>
                         <dl class="row mt-4">
@@ -104,7 +104,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h2>Nexus Lifecycle <span class="badge rounded-pill bg-success">$NEXUS_IQ_SERVER_VERSION</span><</h2>
+                        <h2>Nexus Lifecycle <span class="badge rounded-pill bg-success">$NEXUS_IQ_SERVER_VERSION</span></h2>
                         <p>Eliminate OSS risk across the entire SDLC.</p>
                         <a href="http://iq.localhost" target="_blank" class="btn btn-primary">
                             Access Nexus Lifecycle
@@ -132,7 +132,7 @@
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Default Credentials
+                                    Login Credentials
                                 </button>
                             </h2>
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
@@ -171,7 +171,7 @@
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Default Credentials
+                                    Login Credentials
                                 </button>
                             </h2>
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
