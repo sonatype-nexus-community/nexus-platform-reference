@@ -138,6 +138,10 @@ Example:
 gradle nexusPlatformUp -PNEXUS_IQ_SERVER_VERSION=1.120.0
 ```
 
+# Common Issues / Gotchas
+
+1. If the `Up` command fails - it might be because some of the ports that we are going to use on localhost are already being used - check you're not running anything already that is listening on ports 80, 2480, 8070, 8071 and 8080
+
 # Acknowledgments
 
 This project makes use of the following open source libraries/plugins:
