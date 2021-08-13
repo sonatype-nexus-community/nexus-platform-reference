@@ -23,14 +23,16 @@ For the full suite of products - check out [www.sonatype.com](https://www.sonaty
 
 You'll need the following locally to get started:
 
-1. Docker (tested against Docker version 20.10.7)
+1. Docker (tested against Docker version 20.10.7, but should work with 19.03.0+)
 2. Gradle (tested against Gradle 6.9)
 
 # Pre-defined Template Architectures
 
-| Gradle Name   | Nexus Repo  | Nexus Lifecycle | Description | 
-| ------------- | ----------- | -----------     | ----------- |
-| `noReverseProxy` | Yes - [here](http://repo.localhost:8081) | Yes - [here](http://iq.localhost:8070) | Both Nexus Repository and Nexus Lifecycle available directly via `localhost` addressed over HTTP. |
+| Gradle Name      | Nexus Platform                                | Nexus Repo                               | Nexus Lifecycle                        | Description                                                                                       |
+| ---------------- | --------------------------------------------- | ---------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `main`           | Yes - [here](http://nexus-platform.localhost) | No                                       | No                                     | Both Nexus Repository and Nexus Lifecycle available behind an nGinx reverse proxy.                |
+| `noReverseProxy` | No                                            | Yes - [here](http://repo.localhost:8081) | Yes - [here](http://iq.localhost:8070) | Both Nexus Repository and Nexus Lifecycle available directly via `localhost` addressed over HTTP. |
+
 
 # Quick Start
 

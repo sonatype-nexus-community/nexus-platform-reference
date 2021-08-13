@@ -15,9 +15,25 @@ task grabLatestCascPlugin(type: Copy) {
     into "$projectDir/lib"
 }
 
+task generateWwwContent(type: Copy) {
+    from "$projectDir/config/nginx-www-template"
+    into "$projectDir/config/nginx-www"
+    rename '(.+).template', '$1'
+    expand(project.properties)
+}
+
 apply plugin: 'docker-compose'
 
 dockerCompose {
+    main {
+        useComposeFiles = ['compose-files/nginx-reverse-proxy.yaml', 'compose-files/nexus-repository.yaml', 'compose-files/nexus-iq-server.yaml']
+        environment.put 'DOCKER_ROOT_VOLUME_MOUNT_POINT', "$DOCKER_ROOT_VOLUME_MOUNT_POINT"
+        environment.put 'NEXUS_CASC_PLUGIN_PATH', "$projectDir/lib/nexus-casc-plugin-bundle.kar"
+        environment.put 'NEXUS_LICENSE_PATH', "$NEXUS_LICENSE_PATH"
+        environment.put "NEXUS_IQ_SERVER_VERSION", "$NEXUS_IQ_SERVER_VERSION"
+        environment.put "NEXUS_REPOSITORY_VERSION", "$NEXUS_REPOSITORY_VERSION"
+        environment.put "NGINX_VERSION", "$NGINX_VERSION"
+    }
     noReverseProxy {
         useComposeFiles = ['compose-files/nexus-repository.yaml', 'compose-files/nexus-iq-server.yaml']
         environment.put 'DOCKER_ROOT_VOLUME_MOUNT_POINT', "$DOCKER_ROOT_VOLUME_MOUNT_POINT"
@@ -29,3 +45,4 @@ dockerCompose {
 }
 
 dockerCompose.dependsOn(grabLatestCascPlugin)
+dockerCompose.dependsOn(generateWwwContent)

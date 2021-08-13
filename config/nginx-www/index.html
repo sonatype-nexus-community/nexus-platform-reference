@@ -1,0 +1,225 @@
+<html>
+
+<head>
+    <title>Nexus Platform on Docker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body class="d-flex flex-column h-100">
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="nexus_repository_logo" viewBox="0 0 37 42.25">
+            <title>Nexus Repository</title>
+            <style>
+                .cls-1 {
+                    fill: #1aba73;
+                }
+
+                .cls-2 {
+                    fill: #1c1f2a;
+                }
+            </style>
+            <path class="cls-1"
+                d="M19.13,27V19.56a3.77,3.77,0,0,1,2.77-1.28,3.52,3.52,0,0,1,.81.07V15.46a4.91,4.91,0,0,0-3.58,1.79V15.74h-3V27Z" />
+            <polygon class="cls-"
+                points="0 10.18 0 31.56 18.5 42.25 37 31.56 37 11.3 32.46 13.92 32.46 28.94 18.5 37 4.54 28.94 4.54 12.81 17.63 5.25 17.63 0 0 10.18" />
+            <polygon class="cls-1" points="19.44 0 19.44 5.25 31.73 12.35 36.27 9.73 19.44 0" />
+        </symbol>
+        <symbol id="nexus_lifecycle_logo" viewBox="0 0 37 42.25">
+            <title>Nexus Lifecycle</title>
+            <style>
+                .cls-3 {
+                    fill: #0666f2;
+                }
+
+                .cls-2 {
+                    fill: #1c1f2a;
+                }
+            </style>
+            <path class="cls-3"
+                d="M16,27.07a2.59,2.59,0,0,0,.89,2.21,3.41,3.41,0,0,0,2.14.65h2V26.72h-.82c-.59,0-.89-.27-.89-.8V13.36H16Z" />
+            <polygon class="cls-2"
+                points="18.5 0 0 10.66 0 31.99 17.63 42.14 17.63 36.91 4.54 29.37 4.54 13.28 18.5 5.24 32.46 13.28 32.46 28.26 37 30.88 37 10.66 18.5 0" />
+            <polygon class="cls-3" points="19.44 37.02 19.44 42.25 36.27 32.55 31.73 29.93 19.44 37.02" />
+        </symbol>
+        <symbol id="nexus_firewall" viewBox="0 0 37 42.25">
+            <title>Nexus Firewall</title>
+            <style>
+                .cls-4 {
+                    fill: #a830c2;
+                }
+
+                .cls-2 {
+                    fill: #1c1f2a;
+                }
+            </style>
+            <path class="cls-4"
+                d="M19.58,29.17V20.63h2.25V18.09H19.58v-.46c0-1.08.55-1.61,1.38-1.61a1.7,1.7,0,0,1,1.22.44l1.1-1.77a3.87,3.87,0,0,0-2.89-1.06c-2.23,0-3.72,1.5-3.72,4v.46H14.83v2.54h1.84v8.54Z" />
+            <polygon class="cls-2"
+                points="18.8 0 0 10.56 0 31.69 18.8 42.25 36.62 32.24 32 29.64 18.8 37.06 4.62 29.09 4.62 13.16 18.8 5.19 32.09 12.66 36.71 10.06 18.8 0" />
+            <polygon class="cls-4" points="32.56 14.16 32.55 28.19 36.99 30.78 37 11.57 32.56 14.16" />
+            < </symbol>
+    </svg>
+
+    <main>
+        <h1 class="visually-hidden">Nexus Platform on Docker</h1>
+
+        <div class="container px-4 py-5">
+            <h2 class="pb-2 border-bottom"><em>Your</em> Nexus Platform on Docker</h2>
+            <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">
+                <div class="col d-flex align-items-start">
+                    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+                        <svg class="bi" width="3em" height="3em">
+                            <use xlink:href="#nexus_repository_logo" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Nexus Repository <span class="badge rounded-pill bg-success">3.33.0</span></h2>
+                        <p>Universally manage binaries and artifacts (with HA and support if running Pro).</p>
+                        <a href="http://nexus-repository.localhost" target="_blank" class="btn btn-primary">
+                            Access Nexus Repository
+                        </a>
+                        <dl class="row mt-4">
+                            <dt class="col-sm-3">Product Details</dt>
+                            <dd class="col-sm-9">
+                                <a href="https://www.sonatype.com/products/repository-oss" target="_blank">Nexus
+                                    Repository OSS</a><br />
+                                <a href="https://www.sonatype.com/products/repository-pro" target="_blank">Neuxs
+                                    Repository Pro</a>
+                            </dd>
+
+                            <dt class="col-sm-3">Documentation</dt>
+                            <dd class="col-sm-9">
+                                <a href="https://help.sonatype.com/repomanager3" target="_blank">Nexus Repository
+                                    3</a><br />
+                                <a href="https://help.sonatype.com/repomanager2" target="_blank">Nexus Repository 2</a>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="col d-flex align-items-start">
+                    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+                        <svg class="bi" width="3em" height="3em">
+                            <use xlink:href="#nexus_lifecycle_logo" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Nexus Lifecycle</h2>
+                        <p>Eliminate OSS risk across the entire SDLC.</p>
+                        <a href="http://iq.localhost" target="_blank" class="btn btn-primary">
+                            Access Nexus Lifecycle
+                        </a>
+                        <dl class="row mt-4">
+                            <dt class="col-sm-3">Product Details</dt>
+                            <dd class="col-sm-9">
+                                <a href="https://www.sonatype.com/products/lifecycle" target="_blank">Nexus
+                                    Lifecycle</a><br />
+                                <a href="https://www.sonatype.com/products/firewall" target="_blank">Neuxs Firewall</a>
+                            </dd>
+
+                            <dt class="col-sm-3">Documentation</dt>
+                            <dd class="col-sm-9">
+                                <a href="https://help.sonatype.com/iqserver" target="_blank">Nexus IQ Server</a>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">
+                <div class="col d-flex align-items-start">
+                    <div class="accordion accordion-flush" class="mt-4">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Default Credentials
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    The administrator username is <strong>admin</strong> and the default password will
+                                    have been set to <strong>admin</strong>, unless you changed the configuration. See
+                                    the README for further information.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Accordion Item #2
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong>This is the second item's accordion body.</strong> It is hidden by default,
+                                    until the collapse plugin adds the appropriate classes that we use to style each
+                                    element. These classes control the overall appearance, as well as the showing and
+                                    hiding via CSS transitions. You can modify any of this with custom CSS or overriding
+                                    our default variables. It's also worth noting that just about any HTML can go within
+                                    the <code>.accordion-body</code>, though the transition does limit overflow.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col d-flex align-items-start">
+                    <div class="accordion accordion-flush" class="mt-4">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Default Credentials
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    The administrator username is <strong>admin</strong> and the default password will
+                                    have been set to <strong>admin</strong>, unless you changed the configuration. See
+                                    the README for further information.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Accordion Item #2
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong>This is the second item's accordion body.</strong> It is hidden by default,
+                                    until the collapse plugin adds the appropriate classes that we use to style each
+                                    element. These classes control the overall appearance, as well as the showing and
+                                    hiding via CSS transitions. You can modify any of this with custom CSS or overriding
+                                    our default variables. It's also worth noting that just about any HTML can go within
+                                    the <code>.accordion-body</code>, though the transition does limit overflow.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- </div> -->
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">This is a Community project and is not officially supported by <a
+                    href="https://www.sonatype.com" target="_blank">Sonatype</a>. For help, engage with this <a
+                    href="https://github.com/sonatype-nexus-community/nexus-platform-reference" target="_blank">open
+                    source project on GitHub</a>.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
