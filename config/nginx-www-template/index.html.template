@@ -67,7 +67,7 @@
         <div class="container px-4 py-5">
             <h2 class="pb-2 border-bottom"><em>Your</em> Nexus Platform on Docker</h2>
             <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">
-                <div class="col d-flex align-items-start">
+                <div class="col d-flex align-items-start border-end">
                     <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
                         <svg class="bi" width="3em" height="3em">
                             <use xlink:href="#nexus_repository_logo" />
@@ -93,6 +93,12 @@
                                 <a href="https://help.sonatype.com/repomanager3" target="_blank">Nexus Repository
                                     3</a><br />
                                 <a href="https://help.sonatype.com/repomanager2" target="_blank">Nexus Repository 2</a>
+                            </dd>
+
+                            <dt class="col-sm-3">Guides</dt>
+                            <dd class="col-sm-9">
+                                <a href="https://guides.sonatype.com/repo3/quick-start-guides/" target="_blank">Quick Start Guides</a><br />
+                                <a href="https://guides.sonatype.com/repo3/technical-guides/" target="_blank">Technical Guides</a>
                             </dd>
                         </dl>
                     </div>
@@ -121,12 +127,18 @@
                             <dd class="col-sm-9">
                                 <a href="https://help.sonatype.com/iqserver" target="_blank">Nexus IQ Server</a>
                             </dd>
+
+                            <dt class="col-sm-3">Guides</dt>
+                            <dd class="col-sm-9">
+                                <a href="https://guides.sonatype.com/iqserver/quick-start-guides/" target="_blank">Quick Start Guides</a><br />
+                                <a href="https://guides.sonatype.com/iqserver/technical-guides/" target="_blank">Technical Guides</a>
+                            </dd>
                         </dl>
                     </div>
                 </div>
             </div>
             <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">
-                <div class="col d-flex align-items-start">
+                <div class="col d-flex align-items-start border-end">
                     <div class="accordion accordion-flush" class="mt-4">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOne">
@@ -148,18 +160,17 @@
                             <h2 class="accordion-header" id="headingTwo">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Accordion Item #2
+                                    Nexus Repository Configuration
                                 </button>
                             </h2>
                             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <strong>This is the second item's accordion body.</strong> It is hidden by default,
-                                    until the collapse plugin adds the appropriate classes that we use to style each
-                                    element. These classes control the overall appearance, as well as the showing and
-                                    hiding via CSS transitions. You can modify any of this with custom CSS or overriding
-                                    our default variables. It's also worth noting that just about any HTML can go within
-                                    the <code>.accordion-body</code>, though the transition does limit overflow.
+                                    <p>We've automatically applied a generic configuration to Nexus Repository through the use of a 'configuration-as-code' plugin (see the README).</p>
+                                    <p>Whilst we've set up Repositories, Blobstores, Users and other cool stuff for you to quickly check out, some functionality that relies on external
+                                    systems has not been configured to keep this reference platform 'standalone' and 'easy' to consume for folks.</p>
+                                    <p>If you want to configure any of these (think things like LDAP / SAML etc...), check out the configuration file in <em>config/nexus-repos-casc.yaml</em> 
+                                    alongside the documentation for the <a href="https://github.com/asharapov/nexus-casc-plugin" target="_blank">cool Nexus CASC plugin</a>.</p>
                                 </div>
                             </div>
                         </div>
