@@ -8,6 +8,15 @@ buildscript {
     }
 }
 
+task clean(type: Delete) {
+    delete fileTree('config/nginx-www').matching {
+        exclude '.gitkeep'
+    }
+    delete fileTree('lib').matching {
+        exclude '.gitkeep'
+    }
+}
+
 task grabLatestCascPlugin(type: Copy) {
     from buildscript.configurations.classpath
     include "nexus-casc-plugin*"
@@ -20,6 +29,23 @@ task generateWwwContent(type: Copy) {
     into "$projectDir/config/nginx-www"
     rename '(.+).template', '$1'
     expand(project.properties)
+}
+
+task printNexusPlatformLandingPage(type: Task) {
+    doLast {
+        println ''
+        println '============================================================'
+        println '  _________                     __                          '
+        println '  /   _____/ ____   ____ _____ _/  |_ ___.__.______   ____  '
+        println '  \\_____  \\ /  _ \\ /    \\\\__  \\\\   __<   |  |\\____ \\_/ __ \\ '
+        println '  /        (  <_> )   |  \\/ __ \\|  |  \\___  ||  |_> >  ___/ '
+        println ' /_______  /\\____/|___|  (____  /__|  / ____||   __/ \\___  >'
+        println '          \\/           \\/     \\/     \\/     |__|        \\/ '
+        println '============================================================'
+        println ''
+        println 'Access your local Nexus Platform at http://nexus-platform.localhost'
+        println ''
+    }
 }
 
 apply plugin: 'docker-compose'
@@ -44,5 +70,8 @@ dockerCompose {
     }
 }
 
-dockerCompose.dependsOn(grabLatestCascPlugin)
-dockerCompose.dependsOn(generateWwwContent)
+composeUp.dependsOn([grabLatestCascPlugin, generateWwwContent])
+
+printNexusPlatformLandingPage.configure {
+    mustRunAfter mainComposeUp
+}
