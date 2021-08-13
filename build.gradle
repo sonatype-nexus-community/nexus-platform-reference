@@ -70,8 +70,21 @@ dockerCompose {
     }
 }
 
-composeUp.dependsOn([grabLatestCascPlugin, generateWwwContent])
+// Default/Main Architecture: nexusPlatform
+task nexusPlatformUp(type: Task) {}
+nexusPlatformUp.dependsOn(printNexusPlatformLandingPage)
+printNexusPlatformLandingPage.dependsOn(mainComposeUp)
+mainComposeUp.dependsOn([grabLatestCascPlugin, generateWwwContent])
 
-printNexusPlatformLandingPage.configure {
-    mustRunAfter mainComposeUp
-}
+task nexusPlatformDown(type: Task) {}
+nexusPlatformDown.dependsOn(mainComposeDown)
+
+// No nGinx Archiecture: noReverseProxy
+task noReverseProxyUp(type: Task) {}
+noReverseProxyUp.dependsOn(noReverseProxyComposeUp)
+
+task noReverseProxyDown(type: Task) {}
+noReverseProxyDown.dependsOn(noReverseProxyComposeDown)
+
+// Print information about Nexus Platform
+// printNexusPlatformLandingPage.shouldRunAfter mainComposeUp

@@ -28,9 +28,9 @@ You'll need the following locally to get started:
 
 # Pre-defined Template Architectures
 
-| Gradle Name      | Nexus Platform                                | Nexus Repo                               | Nexus Lifecycle                        | Description                                                                                       |
+| Gradle Task Name | Nexus Platform                                | Nexus Repo                               | Nexus Lifecycle                        | Description                                                                                       |
 | ---------------- | --------------------------------------------- | ---------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `main`           | Yes - [here](http://nexus-platform.localhost) | No                                       | No                                     | Both Nexus Repository and Nexus Lifecycle available behind an nGinx reverse proxy.                |
+| `nexusPlatform`  | Yes - [here](http://nexus-platform.localhost) | No                                       | No                                     | Both Nexus Repository and Nexus Lifecycle available behind an nGinx reverse proxy.                |
 | `noReverseProxy` | No                                            | Yes - [here](http://repo.localhost:8081) | Yes - [here](http://iq.localhost:8070) | Both Nexus Repository and Nexus Lifecycle available directly via `localhost` addressed over HTTP. |
 
 
@@ -38,20 +38,46 @@ You'll need the following locally to get started:
 
 This project is shipped with a number of pre-defined template architectures - pick the one that you want to try!
 
-One you've picked your preferred template architecture to test from the table above note it's **Gradle Name** and substitue in the below comands. The below commands use the ***noReverseProxy*** template architecture.
+One you've picked your preferred template architecture to test from the table above note it's **Gradle Name** and substitue in the below comands. The below commands use the ***nexusPlatform*** template architecture.
 
 **NOTE:** You might wish to read the **Detailed Configuration** section below if you have a trial license to apply.
 
 ## Starting the Platform
 
+Execute the gradle task `nexusPlatform` + `Up` - use the task name for your chosen architecture.
+
 ```
-gradle mainComposeUp
+gradle -q nexusPlatformUp
+
+nginx-proxy uses an image, skipping
+neuxs-iq-server uses an image, skipping
+nexus-repository uses an image, skipping
+Creating network "35d98ba76ac5c547b0ca539f5815d3e9_nexus-platform-reference_main_default" with the default driver
+Creating 35d98ba76ac5c547b0ca539f5815d3e9_nexus-platform-reference_main_neuxs-iq-server_1 ...
+Creating 35d98ba76ac5c547b0ca539f5815d3e9_nexus-platform-reference_main_nexus-repository_1 ...
+Creating 35d98ba76ac5c547b0ca539f5815d3e9_nexus-platform-reference_main_nginx-proxy_1      ...
+Creating 35d98ba76ac5c547b0ca539f5815d3e9_nexus-platform-reference_main_nginx-proxy_1      ... done
+Creating 35d98ba76ac5c547b0ca539f5815d3e9_nexus-platform-reference_main_nexus-repository_1 ... done
+Creating 35d98ba76ac5c547b0ca539f5815d3e9_nexus-platform-reference_main_neuxs-iq-server_1  ... done
+
+============================================================
+  _________                     __
+  /   _____/ ____   ____ _____ _/  |_ ___.__.______   ____
+  \_____  \ /  _ \ /    \\__  \\   __<   |  |\____ \_/ __ \
+  /        (  <_> )   |  \/ __ \|  |  \___  ||  |_> >  ___/
+ /_______  /\____/|___|  (____  /__|  / ____||   __/ \___  >
+          \/           \/     \/     \/     |__|        \/
+============================================================
+
+Access your local Nexus Platform at http://nexus-platform.localhost
 ```
 
 ### Stopping the Platform
 
+Execute the gradle task `nexusPlatform` + `Down` - use the task name for your chosen architecture.
+
 ```
-gradle mainComposeDown
+gradle nexusPlatformDown
 ```
 
 ### Local Cleanup
@@ -72,10 +98,10 @@ These are some cross-cutting platform configurations that you might wish to twea
 
 ### Sonatype Product License
 
-By default, copy your license file to `config/sontype-license-all.lic` to have your license applied during startup. You can change this by setting the `NEXUS_LICENSE_PATH` gradle property.
+By defaul you can copy your license file to `config/sontype-license-all.lic` to have your license applied during startup. You can change this by setting the `NEXUS_LICENSE_PATH` gradle property.
 
 ```
-gradle mainComposeUp -PNEXUS_LICENSE_PATH=/path/to/my.lic
+gradle nexusPlatformUp -PNEXUS_LICENSE_PATH=/path/to/my.lic
 ```
 
 If you don't have a license, Nexus Repository will operated without the Pro Feature and IQ Server will ask you to add a license when you first log in.
@@ -87,7 +113,7 @@ We utilise Docker Volumes to ensure your *data* is not inside the Docker Contain
 By default we'll use the empty `data` folder in this repository to put all Docker Volumes. You can override this to your preferred location by either changing the value in `gradle.properties` or by passing the property at invokation time:
 
 ```
-gradle mainComposeUp -PDOCKER_ROOT_VOLUME_MOUNT_POINT=/path/to/where/i/want/docker/volumes
+gradle nexusPlatformUp -PDOCKER_ROOT_VOLUME_MOUNT_POINT=/path/to/where/i/want/docker/volumes
 ```
 
 ### Default Admin Password
@@ -100,7 +126,7 @@ We are currently using Nexus Repository version 3.33.0 (latest as of 13-Aug-2021
 
 Example:
 ```
-gradle mainComposeUp -PNEXUS_REPOSITORY_VERSION=3.32.0
+gradle nexusPlatformUp -PNEXUS_REPOSITORY_VERSION=3.32.0
 ```
 
 ## Nexus Lifecycle
@@ -109,7 +135,7 @@ We are currently using Nexus IQ Server version 121 (latest as of 13-Aug-2021). Y
 
 Example:
 ```
-gradle mainComposeUp -PNEXUS_IQ_SERVER_VERSION=1.120.0
+gradle nexusPlatformUp -PNEXUS_IQ_SERVER_VERSION=1.120.0
 ```
 
 # Acknowledgments
