@@ -40,7 +40,7 @@ task printNexusPlatformLandingPage(type: Task) {
         println '  \\_____  \\ /  _ \\ /    \\\\__  \\\\   __<   |  |\\____ \\_/ __ \\ '
         println '  /        (  <_> )   |  \\/ __ \\|  |  \\___  ||  |_> >  ___/ '
         println ' /_______  /\\____/|___|  (____  /__|  / ____||   __/ \\___  >'
-        println '          \\/           \\/     \\/     \\/     |__|        \\/ '
+        println '         \\/            \\/     \\/     \\/     |__|        \\/ '
         println '============================================================'
         println ''
         println 'Access your local Nexus Platform at http://nexus-platform.localhost'
