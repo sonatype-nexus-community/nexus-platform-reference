@@ -45,13 +45,21 @@ One you've picked your preferred template architecture to test from the table ab
 ## Starting the Platform
 
 ```
-gradle noReverseProxyComposeUp
+gradle mainComposeUp
 ```
 
 ### Stopping the Platform
 
 ```
-gradle noReverseProxyComposeDown
+gradle mainComposeDown
+```
+
+### Local Cleanup
+
+This removes some generated (templated) configuration and libraries that are downloaded. If you have issues, run this before running `gradle mainComposeUp`.
+
+```
+gradle clean
 ```
 
 # Detailed Configuration
@@ -64,11 +72,13 @@ These are some cross-cutting platform configurations that you might wish to twea
 
 ### Sonatype Product License
 
-By default, copy your license file to `config/sontype-license-all.lic` to have your license applied during startup. You can also override this by passing the full path to your license file as a gradle property:
+By default, copy your license file to `config/sontype-license-all.lic` to have your license applied during startup. You can change this by setting the `NEXUS_LICENSE_PATH` gradle property.
 
 ```
-gradle noReverseProxyComposeUp -PNEXUS_LICENSE_PATH=/path/to/my.lic
+gradle mainComposeUp -PNEXUS_LICENSE_PATH=/path/to/my.lic
 ```
+
+If you don't have a license, Nexus Repository will operated without the Pro Feature and IQ Server will ask you to add a license when you first log in.
 
 ### Docker Persistent Volumes
 
@@ -77,21 +87,30 @@ We utilise Docker Volumes to ensure your *data* is not inside the Docker Contain
 By default we'll use the empty `data` folder in this repository to put all Docker Volumes. You can override this to your preferred location by either changing the value in `gradle.properties` or by passing the property at invokation time:
 
 ```
-gradle noReverseProxyComposeUp -PDOCKER_ROOT_VOLUME_MOUNT_POINT=/path/to/where/i/want/docker/volumes
+gradle mainComposeUp -PDOCKER_ROOT_VOLUME_MOUNT_POINT=/path/to/where/i/want/docker/volumes
 ```
 
 ### Default Admin Password
 
-We utilise Docker Secrets to load and set the initial password for the `admin` user in both Nexus Repository and Nexus Lifecycle. You can change the password by editing the contents of `config/admin_password`.
+Docker Secrets are utilised to load and set the initial password for the `admin` user in both Nexus Repository and Nexus Lifecycle. You can change the password by editing the contents of `config/admin_password`.
 
 ## Nexus Repository
 
-*Coming soon*
+We are currently using Nexus Repository version 3.33.0 (latest as of 13-Aug-2021). You can change this by setting the `NEXUS_REPOSITORY_VERSION` gradle property.
+
+Example:
+```
+gradle mainComposeUp -PNEXUS_REPOSITORY_VERSION=3.32.0
+```
 
 ## Nexus Lifecycle
 
-*Coming soon*
+We are currently using Nexus IQ Server version 121 (latest as of 13-Aug-2021). You can change this by setting the `NEXUS_IQ_SERVER_VERSION` gradle property.
 
+Example:
+```
+gradle mainComposeUp -PNEXUS_IQ_SERVER_VERSION=1.120.0
+```
 
 # Acknowledgments
 
