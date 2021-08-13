@@ -40,7 +40,7 @@ task printNexusPlatformLandingPage(type: Task) {
         println '  \\_____  \\ /  _ \\ /    \\\\__  \\\\   __<   |  |\\____ \\_/ __ \\ '
         println '  /        (  <_> )   |  \\/ __ \\|  |  \\___  ||  |_> >  ___/ '
         println ' /_______  /\\____/|___|  (____  /__|  / ____||   __/ \\___  >'
-        println '         \\/            \\/     \\/     \\/     |__|        \\/ '
+        println '         \\/            \\/     \\/     \\/      |__|        \\/ '
         println '============================================================'
         println ''
         println 'Access your local Nexus Platform at http://nexus-platform.localhost'
@@ -52,7 +52,7 @@ apply plugin: 'docker-compose'
 
 dockerCompose {
     main {
-        useComposeFiles = ['compose-files/nginx-reverse-proxy.yaml', 'compose-files/nexus-repository.yaml', 'compose-files/nexus-iq-server.yaml']
+        useComposeFiles = ['compose-files/nginx-reverse-proxy.yaml', 'compose-files/nexus-repository.yaml', 'compose-files/nexus-iq-server.yaml']    
         environment.put 'DOCKER_ROOT_VOLUME_MOUNT_POINT', "$DOCKER_ROOT_VOLUME_MOUNT_POINT"
         environment.put 'NEXUS_CASC_PLUGIN_PATH', "$projectDir/lib/nexus-casc-plugin-bundle.kar"
         environment.put 'NEXUS_LICENSE_PATH', "$NEXUS_LICENSE_PATH"
@@ -85,6 +85,3 @@ noReverseProxyUp.dependsOn(noReverseProxyComposeUp)
 
 task noReverseProxyDown(type: Task) {}
 noReverseProxyDown.dependsOn(noReverseProxyComposeDown)
-
-// Print information about Nexus Platform
-// printNexusPlatformLandingPage.shouldRunAfter mainComposeUp
