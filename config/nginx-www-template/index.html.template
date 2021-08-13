@@ -189,7 +189,7 @@
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     The administrator username is <strong>admin</strong> and the default password will
-                                    have been set to <strong>admin</strong>, unless you changed the configuration. See
+                                    have been set to <strong>admin123</strong>, unless you changed the configuration. See
                                     the README for further information.
                                 </div>
                             </div>
