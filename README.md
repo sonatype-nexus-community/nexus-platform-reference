@@ -99,11 +99,30 @@ This project makes use of the following open source libraries/plugins:
 1. [gradle-docker-compose-plugin](https://github.com/avast/gradle-docker-compose-plugin) which is licensed under MIT License and is Copyright (c) 2016 Avast
 2. [nexus-casc-plugin](https://github.com/asharapov/nexus-casc-plugin) which is licensed under MIT License and is Copyright 2019 Sven Tschui
 
+# License
+    Copyright 2019-Present Sonatype Inc.
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+
 # The Fine Print
+    It is worth noting that this is NOT SUPPORTED by Sonatype, and is a contribution of ours to the open source community (read: you!)
 
-This is a community project and is **NOT OFFICIALLY SUPPORTED** by Sonatype - it is purely a contribution to the open source community (read: you!).
+    Remember:
 
-Remember:
-- Use this contribution at the risk tolerance that you have
-- Do NOT file Sonatype support tickets related to to this project
-- DO file issues here on GitHub, so that the community can pitch in :-)
+    - Use this contribution at the risk tolerance that you have
+    - Do NOT file Sonatype support tickets related to this project
+    - DO file issues here on GitHub, so that the community can pitch in
+    - Phew, that was easier than I thought. Last but not least of all:
+
+    Have fun creating and using this utility to quikcly get hands-on with Nexus Repository and Nexus Lifecycle. We are glad to have you here!
