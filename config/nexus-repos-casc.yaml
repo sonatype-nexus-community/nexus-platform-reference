@@ -45,8 +45,8 @@ systemConfig:
     - type: OutreachManagementCapability
       notes: Disable the survey on the main page
       enabled: false
-  license:
-    installFrom: /sonatype-license.lic
+  # license:
+  #   installFrom: /sonatype-license.lic
 securityConfig:
   anonymousAccess: true
   realms:
