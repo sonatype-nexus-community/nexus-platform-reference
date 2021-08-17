@@ -3,11 +3,21 @@ version: '3.9'
 x-env-license: &env-license-volume
   '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
 
+x-nxrm3-healthcheck: &nxrm3-healthcheck
+  test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8081/service/rest/v1/status/writable"]
+  interval: 10s
+  timeout: 10s
+  retries: 10
+  start_period: 40s
+
 x-nxrm3-volume-nexus-properties: &nxrm3-volume-nexus-properties
   './config/nexus-repo.properties:/nexus-data/etc/nexus.properties'
 
 x-nxrm3-volume-casc-config: &nxrm3-volume-casc-config
-  './config/nexus-repos-casc.yaml:/opt/nexus.yml:ro'
+  './config/nexus-repo-casc.yaml:/opt/nexus.yml:ro'
+
+x-nxrm3-volume-casc-config-oss: &nxrm3-volume-casc-config-oss
+  './config/nexus-repo-casc-oss.yaml:/opt/nexus.yml:ro'
 
 x-nxrm3-volume-data: &nxrm3-volume-data
   '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/nexus-data:/nexus-data:delegated'
@@ -22,9 +32,6 @@ services:
     image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
       BASE_URL: "http://iq.localhost:8070"
-    healthcheck:
-      # Disabled as if no valid license, healthcheck fails
-      disable: true
     ports:
       - "8070:8070"
       - "8071:8071"
@@ -42,9 +49,6 @@ services:
     image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
       BASE_URL: "http://iq.localhost"
-    healthcheck:
-      # Disabled as if no valid license, healthcheck fails
-      disable: true
     ports:
       - "8070:8070"
       - "8071:8071"
@@ -65,12 +69,8 @@ services:
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
       NEXUS_IQ_BASE_URL: 'http://iq.localhost:8070'
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost"]
-    #   interval: 1m30s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 40s
+    healthcheck:
+      << : *nxrm3-healthcheck
     ports:
       - '8081:8081'
     profiles:
@@ -83,6 +83,25 @@ services:
       - *nxrm3-volume-casc-config
       - *nxrm3-volume-data
 
+  nxrm3_direct_oss:
+    build: ./nxrm3
+    environment:
+      BASE_URL: 'http://repo.localhost:8081'
+      NEXUS_SECURITY_RANDOMPASSWORD: 'false'
+      NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+    healthcheck:
+      << : *nxrm3-healthcheck
+    ports:
+      - '8081:8081'
+    profiles:
+      - repoOssDemo
+    secrets:
+      - admin_password
+    volumes: 
+      - *nxrm3-volume-nexus-properties
+      - *nxrm3-volume-casc-config-oss
+      - *nxrm3-volume-data
+
   nxrm3_proxied:
     build: ./nxrm3
     environment:
@@ -90,6 +109,8 @@ services:
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
       NEXUS_IQ_BASE_URL: 'http://iq.localhost:8070'
+    healthcheck:
+      << : *nxrm3-healthcheck
     profiles:
       - proxied
     ports:

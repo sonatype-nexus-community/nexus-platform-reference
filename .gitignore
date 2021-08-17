@@ -1,22 +1,12 @@
-# Ignore .gradle
-.gradle*
-
-# Never commit any License Files
+# Never commit any Sonatype License Files
 *.lic
 
 # Never commit any generated nGinx content
-config/nginx-www/*
+# config/nginx-www/*
 
-# Never commit any Docker Volume data
+# Never commit any Docker Volume data (default path we use)
 data/*
 
-# Never commit any libraries obtained and placed in lib directory
-lib/*
-
-#dockstation
-.env
-#anchore db
-/db
-
+# Ignore developer IDE files
 /.vscode
 .DS_Store
