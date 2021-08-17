@@ -2,7 +2,7 @@
 
 This repo contains `docker-compose` files associated sample configuration for quickly standing up a number of *Reference Architectures* for the Nexus Platform components.
 
-Ideal if you want to get hand on quickly :-)
+Ideal if you want to get hands on quickly :-)
 
 Unless you have a license from [Sonatype](https://www.sonatype.com), you will only be able to use [Neuxs Repository OSS](https://www.sonatype.com/products/repository-oss).
 
@@ -25,10 +25,10 @@ For the full suite of products - check out [www.sonatype.com](https://www.sonaty
 
 We utilise [docker-compose profiles](https://docs.docker.com/compose/profiles/) to allow you to quickly stand up the required containers to realise a specific refernece architecture.
 
-Assuming you have [Docker Desktop]([https://](https://www.docker.com/products/docker-desktop) 19.03.0+ (or similar) installed, you can simply run `docker-compose` passing the required profile. An example using the `nexusPlatform` profile might be:
+Assuming you have [Docker Desktop]([https://](https://www.docker.com/products/docker-desktop) 19.03.0+ (or similar) installed, you can simply run `docker-compose` passing the required profile. An example using the `proxied` profile might be:
 
 ```
-docker-compose --profile=nexusPlatform up -d
+docker-compose --profile=proxied up -d
 ```
 
 # Providing your Sonatype License
@@ -45,7 +45,7 @@ For most of the reference architecutres, you'll need a Sonatype license. If you 
 
 | Profile Name  | License Required | Nexus Platform                                | Nexus Repo                               | Nexus Lifecycle                        | Description                                                                                           |
 | ------------- | ---------------- | --------------------------------------------- | ---------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `proxied`     | Yes              | Yes - [here](http://nexus-platform.localhost) | No                                       | No                                     | Both Nexus Repository Pro and Nexus Lifecycle available behind an nGinx reverse proxy.                |
+| `proxied`     | Yes              | Yes - [here](http://nexus-platform.localhost) | Yes [here](http://repo.localhost/)       | Yes [here](http://iq.localhost/)       | Both Nexus Repository Pro and Nexus Lifecycle available behind an nGinx reverse proxy.                |
 | `direct`      | Yes              | No                                            | Yes - [here](http://repo.localhost:8081) | Yes - [here](http://iq.localhost:8070) | Both Nexus Repository Pro and Nexus Lifecycle available directly via `localhost` addressed over HTTP. |
 | `repoOssDemo` | No               | No                                            | Yes - [here](http://repo.localhost:8081) | No                                     | Nexus Repo OSS will be started.                                                                       |
 

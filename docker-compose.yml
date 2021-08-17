@@ -49,9 +49,11 @@ services:
     image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
       BASE_URL: "http://iq.localhost"
-    ports:
-      - "8070:8070"
-      - "8071:8071"
+    networks:
+      - platform
+    # ports:
+    #   - "8070:8070"
+    #   - "8071:8071"
     profiles:
       - proxied
     secrets:
@@ -111,10 +113,12 @@ services:
       NEXUS_IQ_BASE_URL: 'http://iq.localhost:8070'
     healthcheck:
       << : *nxrm3-healthcheck
+    networks:
+      - platform
     profiles:
       - proxied
-    ports:
-      - '8081:8081'
+    # ports:
+    #   - '8081:8081'
     secrets:
       - admin_password
     volumes: 
@@ -131,6 +135,11 @@ services:
     environment:
       - NGINX_HOST=nexus-platform.localhost
       - NGINX_PORT=80
+    healthcheck:
+      test: ["CMD-SHELL", "wget -O /dev/null http://localhost || exit 1"]
+      timeout: 10s
+    networks:
+      - platform
     ports:
       - "80:80"
     profiles:
@@ -139,3 +148,5 @@ services:
       - "./config/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./config/nginx-www:/usr/share/nginx/html:ro"
     
+networks:
+    platform:
