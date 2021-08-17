@@ -45,16 +45,14 @@ services:
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
 
-  nxiq_proxied:
+  nxiq-proxied:
     image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
       BASE_URL: "http://iq.localhost"
     networks:
       - platform
-    # ports:
-    #   - "8070:8070"
-    #   - "8071:8071"
     profiles:
+      - cicd
       - proxied
     secrets:
       - admin_password
@@ -104,7 +102,7 @@ services:
       - *nxrm3-volume-casc-config-oss
       - *nxrm3-volume-data
 
-  nxrm3_proxied:
+  nxrm3-proxied:
     build: ./nxrm3
     environment:
       BASE_URL: 'http://repo.localhost'
@@ -116,9 +114,8 @@ services:
     networks:
       - platform
     profiles:
+      - cicd
       - proxied
-    # ports:
-    #   - '8081:8081'
     secrets:
       - admin_password
     volumes: 
@@ -130,14 +127,17 @@ services:
   proxy:
     image: "nginx:${NGINX_VERSION:?err}"
     depends_on: 
-      - nxrm3_proxied
-      - nxiq_proxied
+      - nxrm3-proxied
+      - nxiq-proxied
     environment:
       - NGINX_HOST=nexus-platform.localhost
       - NGINX_PORT=80
     healthcheck:
-      test: ["CMD-SHELL", "wget -O /dev/null http://localhost || exit 1"]
-      timeout: 10s
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+      start_period: 20s
     networks:
       - platform
     ports:
@@ -147,6 +147,50 @@ services:
     volumes:
       - "./config/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./config/nginx-www:/usr/share/nginx/html:ro"
+
+  proxy_cicd:
+    image: "nginx:${NGINX_VERSION:?err}"
+    depends_on: 
+      - nxrm3-proxied
+      - nxiq-proxied
+      - jenkins-proxied
+    environment:
+      - NGINX_HOST=nexus-platform.localhost
+      - NGINX_PORT=80
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+      start_period: 20s
+    networks:
+      - platform
+    ports:
+      - "80:80"
+    profiles:
+      - cicd
+    volumes:
+      - "./config/nginx-cicd.conf:/etc/nginx/nginx.conf:ro"
+      - "./config/nginx-www:/usr/share/nginx/html:ro"
+
+# ------- Other non Sonatype Services --------
+  jenkins-proxied:
+    build: ./jenkins
+    environment: 
+      JAVA_OPTS: '-Djenkins.install.runSetupWizard=false'
+      JENKINS_OPTS: '--argumentsRealm.roles.user=admin --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost/login"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+      start_period: 30s
+    networks:
+      - platform
+    profiles:
+      - cicd
+    volumes:
+      - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/jenkins:/var/jenkins_home:delegated'
     
 networks:
     platform:
