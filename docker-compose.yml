@@ -63,7 +63,11 @@ services:
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
     
   nxrm3_direct:
-    build: ./nxrm3
+    build: 
+      context: ./nxrm3
+      args:
+        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
+        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
     environment:
       BASE_URL: 'http://repo.localhost:8081'
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
@@ -84,7 +88,12 @@ services:
       - *nxrm3-volume-data
 
   nxrm3_direct_oss:
-    build: ./nxrm3
+    build: 
+      context: ./nxrm3
+      args:
+        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
+        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
+    environment:
     environment:
       BASE_URL: 'http://repo.localhost:8081'
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
@@ -103,7 +112,11 @@ services:
       - *nxrm3-volume-data
 
   nxrm3-proxied:
-    build: ./nxrm3
+    build: 
+      context: ./nxrm3
+      args:
+        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
+        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
     environment:
       BASE_URL: 'http://repo.localhost'
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
