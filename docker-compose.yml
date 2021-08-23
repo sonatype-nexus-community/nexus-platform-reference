@@ -1,194 +1,209 @@
-version: '3.7'
+version: '3.9'
+
+x-env-license: &env-license-volume
+  '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
+
+x-nxrm3-healthcheck: &nxrm3-healthcheck
+  test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8081/service/rest/v1/status/writable"]
+  interval: 10s
+  timeout: 10s
+  retries: 10
+  start_period: 40s
+
+x-nxrm3-volume-nexus-properties: &nxrm3-volume-nexus-properties
+  './config/nexus-repo.properties:/nexus-data/etc/nexus.properties'
+
+x-nxrm3-volume-casc-config: &nxrm3-volume-casc-config
+  './config/nexus-repo-casc.yaml:/opt/nexus.yml:ro'
+
+x-nxrm3-volume-casc-config-oss: &nxrm3-volume-casc-config-oss
+  './config/nexus-repo-casc-oss.yaml:/opt/nexus.yml:ro'
+
+x-nxrm3-volume-data: &nxrm3-volume-data
+  '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/nexus-data:/nexus-data:delegated'
 
 secrets:
-  password_newadmin:
-    file: ./nexus-casc/password_newadmin
+  admin_password:
+    file: ./config/admin_password
 
 services:
-   demo:
-     build: ./nginx
-     image: 'sonatype-se/sonatype_nginx-proxy:2.6.6'
-     ports:
-       - '443:443'
-       - '5000:5000'
-       - '8011:8011'
-     command:
-       - nginx
-       - '-g'
-       - daemon off;
-     depends_on:
-       - iq-server
-       - nexus
 
-   nexus:
-     image: 'sonatype/nexus3:3.29.2'
-     environment:
-       BASE_URL: 'http://nexus'
-       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
-       ## This enables/disables the CasC plugin
-       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
-     secrets:
-       - password_newadmin
-     volumes:
-       - '~/.demo-pv/nexus-data:/nexus-data:delegated'
-       ## For dynamic license install
-       - './nexus.properties:/nexus-data/etc/nexus.properties'
-       - '~/2020-sonatype-internal-nxrm-firewall-lifecycle-1000-users-ppp.lic:/2020-sonatype-license.lic'
-       # CasC plugin, also uncomment above in environment section: https://github.com/AdaptiveConsulting/nexus-casc-plugin
-       - './nexus-casc/demo-nexus.yml:/opt/nexus.yml:ro'
-       - './nexus-casc/nexus-casc-plugin-3.28.0-01-bundle.kar:/opt/sonatype/nexus/deploy/nexus-casc-plugin-bundle.kar:delegated'
-     ports:
-       - '8081:8081'
-       - '2480:2480'
+  nxiq_direct:
+    image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
+    environment:
+      BASE_URL: "http://iq.localhost:8070"
+    ports:
+      - "8070:8070"
+      - "8071:8071"
+    profiles:
+      - direct
+    secrets:
+      - admin_password
+    volumes:
+      - *env-license-volume
+      - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
 
-   iq-server:
-     image: 'sonatype/nexus-iq-server:1.104.0'
-     environment:
-       BASE_URL: 'http://iq-server'     
-     volumes:
-       - '~/.demo-pv/iq-data:/sonatype-work:delegated'
-       - '~/.demo-pv/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated'
-       - './config.yml:/etc/nexus-iq-server/config.yml:delegated'
-     ports:
-       - '8070:8070' 
-       - '8071:8071'
-
-   ## see Nexus IQ for Jira https://help.sonatype.com/integrations/nexus-iq-for-jira
-   jira:
-     image: 'atlassian/jira-software:8.5.3' # https://hub.docker.com/r/atlassian/jira-software
-     volumes:
-       - '~/.demo-pv/jira-data:/var/atlassian/application-data/jira:delegated'
-     ports:
-       - '8080:8080'
+  nxiq-proxied:
+    image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
+    environment:
+      BASE_URL: "http://iq.localhost"
+    networks:
+      - platform
+    profiles:
+      - cicd
+      - proxied
+    secrets:
+      - admin_password
+    volumes:
+      - *env-license-volume
+      - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
     
-   ## Bitbucket
-   bitbucket:
-     image: 'atlassian/bitbucket-server:7.0.2-jdk11' # https://hub.docker.com/r/atlassian/bitbucket-server
-     volumes:
-       - '~/.demo-pv/bitbucket-data:/var/atlassian/application-data/bitbucketl:delegated'
-     ports:
-       - '7990:7990'
-       - '7999:7999'
+  nxrm3_direct:
+    build: 
+      context: ./nxrm3
+      args:
+        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
+        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
+    environment:
+      BASE_URL: 'http://repo.localhost:8081'
+      NEXUS_SECURITY_RANDOMPASSWORD: 'false'
+      NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+      NEXUS_IQ_BASE_URL: 'http://iq.localhost:8070'
+    healthcheck:
+      << : *nxrm3-healthcheck
+    ports:
+      - '8081:8081'
+    profiles:
+      - direct
+    secrets:
+      - admin_password
+    volumes: 
+      - *env-license-volume
+      - *nxrm3-volume-nexus-properties
+      - *nxrm3-volume-casc-config
+      - *nxrm3-volume-data
 
-   ## Docker based build jobs that want to use NXRM need to be outside of docker
-   ## network so they can hit the Nginx server for ingress and routing.      
-   jenkins:
-     image: jenkinsci/blueocean # https://hub.docker.com/r/jenkinsci/blueocean
-     user: root
-     volumes:
-       - '~/.jenkins:/var/jenkins_home:delegated'
-       - '/var/run/docker.sock:/var/run/docker.sock'
-     ports:
-       - '9080:8080'
-       - '50000:50000'
+  nxrm3_direct_oss:
+    build: 
+      context: ./nxrm3
+      args:
+        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
+        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
+    environment:
+    environment:
+      BASE_URL: 'http://repo.localhost:8081'
+      NEXUS_SECURITY_RANDOMPASSWORD: 'false'
+      NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+    healthcheck:
+      << : *nxrm3-healthcheck
+    ports:
+      - '8081:8081'
+    profiles:
+      - repoOssDemo
+    secrets:
+      - admin_password
+    volumes: 
+      - *nxrm3-volume-nexus-properties
+      - *nxrm3-volume-casc-config-oss
+      - *nxrm3-volume-data
 
-## Clair Local scans https://hub.docker.com/r/arminc/clair-local-scan
-  #  clair-db:
-  #    # near-daily updates https://hub.docker.com/r/arminc/clair-db/tags
-  #    image: arminc/clair-db:2020-06-20
-  #    ports:
-  #      - '5432:5432'
-  #  clair:
-  #    image: arminc/clair-local-scan:latest
-  #    ports:
-  #      - '6060:6060'
-  #    links:
-  #      - clair-db:postgres
-  #    depends_on:
-  #      - clair-db
+  nxrm3-proxied:
+    build: 
+      context: ./nxrm3
+      args:
+        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
+        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
+    environment:
+      BASE_URL: 'http://repo.localhost'
+      NEXUS_SECURITY_RANDOMPASSWORD: 'false'
+      NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+      NEXUS_IQ_BASE_URL: 'http://iq.localhost:8070'
+    healthcheck:
+      << : *nxrm3-healthcheck
+    networks:
+      - platform
+    profiles:
+      - cicd
+      - proxied
+    secrets:
+      - admin_password
+    volumes: 
+      - *env-license-volume
+      - *nxrm3-volume-nexus-properties
+      - *nxrm3-volume-casc-config
+      - *nxrm3-volume-data
 
-## Webhook listener
-#    listener:
-#      image: my-webhook-listener:1.0.0
-#      build: ./listener
-#      volumes:
-#        - /usr/local/bin/docker:/usr/bin/docker
-#        - /var/run/docker.sock:/var/run/docker.sock
-#      ports:
-#        - "9000:9000"
-#      command:
-#        - -verbose 
-#        - -hotreload
-#        - -hooks=/etc/webhook/test.json
-#        - -hooks=/etc/webhook/dockerHub-scan.json
-#        - -hooks=/etc/webhook/nxrm-consume.json
-#        - -hooks=/etc/webhook/iq-consume.json
-#        - -hooks=/etc/webhook/quay-consume.json
+  proxy:
+    image: "nginx:${NGINX_VERSION:?err}"
+    depends_on: 
+      - nxrm3-proxied
+      - nxiq-proxied
+    environment:
+      - NGINX_HOST=nexus-platform.localhost
+      - NGINX_PORT=80
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+      start_period: 20s
+    networks:
+      - platform
+    ports:
+      - "80:80"
+    profiles:
+      - proxied
+    volumes:
+      - "./config/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./config/nginx-www:/usr/share/nginx/html:ro"
 
-  ## Anchore
-   anchore-engine:
-     image: docker.io/anchore/anchore-engine:latest
-     #privileged: true
-     depends_on:
-       - anchore-db
-     ports:
-       - "8228:8228"
-       - "8338:8338"
-     volumes:
-       - ~/.demo-pv/aevolume/config:/config/:z
-     logging:
-       driver: "json-file"
-       options:
-         max-size: 100m
-     environment:
-      # NOTE: this should be set to the same name as this service (e.g. anchore-engine)
-       - ANCHORE_HOST_ID=dockerhostid-anchore-engine
-       - ANCHORE_ENDPOINT_HOSTNAME=anchore-engine
-   anchore-db:
-     image: "postgres:9"
-     volumes:
-       - ~/.demo-pv/aevolume/db:/var/lib/postgresql/data/pgdata/:z
-     environment:
-       - POSTGRES_PASSWORD=mysecretpassword
-       - PGDATA=/var/lib/postgresql/data/pgdata/
-     logging:
-       driver: "json-file"
-       options:
-         max-size: 100m
-     #uncomment to expose a port to allow direct/external access to the DB, for debugging
-     #ports:
-     # - "2345:5432"
+  proxy_cicd:
+    image: "nginx:${NGINX_VERSION:?err}"
+    depends_on: 
+      - nxrm3-proxied
+      - nxiq-proxied
+      - jenkins-proxied
+    environment:
+      - NGINX_HOST=nexus-platform.localhost
+      - NGINX_PORT=80
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+      start_period: 20s
+    networks:
+      - platform
+    ports:
+      - "80:80"
+    profiles:
+      - cicd
+    volumes:
+      - "./config/nginx-cicd.conf:/etc/nginx/nginx.conf:ro"
+      - "./config/nginx-www:/usr/share/nginx/html:ro"
 
-  ## Go
-  #  athens:
-  #    image: gomods/athens:v0.4.0
-  #    restart: always
-  #    ports:
-  #      - 3000:3000
-  #    volumes:
-  #      - ~/.demo-pv/athens:/usr/local/athens
-  #    environment:
-  #      - ATHENS_STORAGE_TYPE=disk
-  #      - ATHENS_DISK_STORAGE_ROOT=/usr/local/athens
-        
-  #  go:
-  #    build: ./golang/
-  #    image: sonatype-se/golang:compose
-
-## Fortify on-premise integration
-   #The Integration Service connects IQ to Fortify SSC
-   intSvc:
-     image: 'cmyanko/nexus-ssc-integration:20.1.0.22'
-     build: ./intSvc
-     depends_on:
-       - ssc
-       - iq-server
-     ports:
-       - '8182:8182'
-     volumes:
-       - '~/.demo-pv/intSvcWorkFolder:/home/nexus/work:delegated'
-
-  #  # The SSC container is a private container for Microfocus and Sonatype employees
-  #  # for use in Demo's and PoC's    
-   ssc:
-      image: 'fortifydocker/sscdemo:20.1.0'
-      ports:
-       - '8888:8080'
-       ##This broke with docker desktop 2.5.0.0
-      volumes:
-       - ssc-data:/fortify
-      environment:
-       - SSC_MAX_MEM_MB=4096
-
-volumes:
-  ssc-data:
+# ------- Other non Sonatype Services --------
+  jenkins-proxied:
+    build: ./jenkins
+    environment: 
+      JAVA_OPTS: '-Djenkins.install.runSetupWizard=false'
+      JENKINS_OPTS: '--argumentsRealm.roles.user=admin --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost/login"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+      start_period: 30s
+    networks:
+      - platform
+    profiles:
+      - cicd
+    volumes:
+      - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/jenkins:/var/jenkins_home:delegated'
+    
+networks:
+    platform:

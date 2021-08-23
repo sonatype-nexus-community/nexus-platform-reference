@@ -1,0 +1,452 @@
+---
+metadata:
+  executionPolicy: IF_CHANGED
+systemConfig:
+  baseUrl: ${BASE_URL:"http://repo.localhost:8081"}
+  connTimeout: 20
+  connRetries: 2
+  userAgentFragment: nexus3
+  # httpProxy: ${HTTP_PROXY:""}
+  # httpsProxy: ${HTTPS_PROXY:""}
+  nonProxyHosts: ${NO_PROXY:""}
+  smtp:
+    enabled: false
+    # host: smtp.mail.ru
+    # port: 465
+    # userName: testusr2020@mail.ru
+    # password: "${file:/run/secrets/smtp_passwd}"
+    # fromAddress: testusr2020@mail.ru
+    # subjectPrefix: NEXUS
+    # sslOnConnectEnabled: true
+    # sslCheckServerIdentityEnabled: false
+  iq:
+    enabled: false
+    # url: ${NEXUS_IQ_BASE_URL:"http://iq.localhost:8070"}
+    # username: admin
+    # password: "${file:/run/secrets/admin_password}"
+    # authType: USER
+    # attrs: {}
+    # showLink: true
+    # useTrustStore: false
+    # timeout: 10
+  capabilities:
+    - type: rapture.settings
+      enabled: true
+      notes: Update default session timeouts
+      attrs:
+        title: Nexus Repository Manager
+        longRequestTimeout: '180'
+        requestTimeout: '60'
+        statusIntervalAnonymous: '60'
+        statusIntervalAuthenticated: '5'
+        searchRequestTimeout: '0'
+        sessionTimeout: '300'
+        debugAllowed: 'true'
+    - type: OutreachManagementCapability
+      notes: Disable the survey on the main page
+      enabled: false
+securityConfig:
+  anonymousAccess: true
+  realms:
+    - name: DockerToken
+      enabled: true
+    - name: NexusAuthenticatingRealm
+      enabled: true
+    - name: NexusAuthorizingRealm
+      enabled: true
+    - name: NpmToken
+      enabled: true
+    - name: NuGetApiKey
+      enabled: true
+  privileges:
+    - id: system-repository-admin-docker-docker-proxy-update
+      authSource: default
+      name: system-repository-admin-docker-docker-proxy-update
+      description: Permit update to docker-proxy repository configuration
+      type: repository-admin
+      attrs:
+        format: docker
+        repository: docker-proxy
+        actions: read,update
+  roles:
+    - id: nx-developers
+      authSource: default
+      name: nx-developers
+      description: This role has all the privileges as well as the 'nx-anonymous' role adding the specified privileges to them
+      privileges:
+        - nx-component-upload
+        - nx-repository-view-*-*-edit
+        - nx-repository-view-*-*-add
+      roles:
+        - nx-anonymous
+    - id: staff
+      authSource: default
+      name: nx-staff
+      description: Map external developers from LDAP group 'staff' to Nexus role 'nx-staff' that has same privileges as 'nx-developers' role
+      privileges: []
+      roles:
+        - nx-developers
+      readOnly: false
+  rolesToDelete: []
+  pruneOtherUsers: false
+  users:
+    - id: "anonymous"   # keep that account without any changes
+      authSource: default
+    - id: admin
+      authSource: default
+      email: admin@example.com
+      active: true
+      roles:
+        - id: nx-admin
+          authSource: default
+      password: "${file:/run/secrets/admin_password}"
+      updateExistingPassword: true
+  usersToDelete: []
+  pruneOtherUsers: true
+repositoryConfig:
+  # Blobstores
+  blobStores:
+    - name: docker
+      type: File
+      attrs:
+        file:
+          path: docker
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 524288000
+          quotaType: spaceRemainingQuota
+    - name: docker-ext
+      type: File
+      attrs:
+        file:
+          path: docker-ext
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 1073741824
+          quotaType: spaceRemainingQuota
+    - name: maven
+      type: File
+      attrs:
+        file:
+          path: maven
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 104857600
+          quotaType: spaceRemainingQuota
+    - name: maven-ext
+      type: File
+      attrs:
+        file:
+          path: maven-ext
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 1073741824
+          quotaType: spaceRemainingQuota
+    - name: npm
+      type: File
+      attrs:
+        file:
+          path: npm
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 104857600
+          quotaType: spaceRemainingQuota
+    - name: npm-ext
+      type: File
+      attrs:
+        file:
+          path: npm-ext
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 1073741824
+          quotaType: spaceRemainingQuota
+    - name: nuget
+      type: File
+      attrs:
+        file:
+          path: nuget
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 104857600
+          quotaType: spaceRemainingQuota
+    - name: nuget-ext
+      type: File
+      attrs:
+        file:
+          path: nuget-ext
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 1073741824
+          quotaType: spaceRemainingQuota
+    - name: pupy
+      type: File
+      attrs:
+        file:
+          path: pupy
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 104857600
+          quotaType: spaceRemainingQuota
+    - name: pupy-ext
+      type: File
+      attrs:
+        file:
+          path: pupy-ext
+        blobStoreQuotaConfig:
+          quotaLimitBytes: 1073741824
+          quotaType: spaceRemainingQuota
+  blobStoresToDelete:
+    - default
+  # Cleanup Policies
+  cleanupPolicies:
+    - name: cleanup-maven-proxy
+      format: maven2
+      mode: delete
+      notes: ''
+      criteria:
+        lastDownloaded: "864000"
+        lastBlobUpdated: "2592000"
+        regex: "^.*test.*$"
+        isPrerelease: "true"
+  cleanupPoliciesToDelete: []
+  # Repositories
+  repositories:
+    - name: docker-hosted
+      recipeName: docker-hosted
+      online: true
+      attrs:
+        docker:
+          httpPort: 8082
+          forceBasicAuth: true
+          v1Enabled: false
+        storage:
+          blobStoreName: docker
+          strictContentTypeValidation: true
+          writePolicy: ALLOW
+          latestPolicy: false
+        component:
+          proprietaryComponents: true
+    - name: docker-proxy
+      recipeName: docker-proxy
+      online: true
+      attrs:
+        docker:
+          forceBasicAuth: true
+          v1Enabled: false
+        proxy:
+          remoteUrl: https://registry-1.docker.io
+          contentMaxAge: 2880
+          metadataMaxAge: 2880
+        dockerProxy:
+          indexType: HUB
+          cacheForeignLayers: true
+          useTrustStoreForIndexAccess: false
+          foreignLayerUrlWhitelist:
+            - .*
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: docker-ext
+          strictContentTypeValidation: true
+        negativeCache:
+          enabled: true
+          timeToLive: 15
+      # routingRule: test-rule
+    - name: docker
+      recipeName: docker-group
+      online: true
+      attrs:
+        docker:
+          httpPort: 8083
+          forceBasicAuth: true
+          v1Enabled: false
+        storage:
+          blobStoreName: docker-ext
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - docker-hosted
+            - docker-proxy
+    - name: maven-snapshots
+      recipeName: maven2-hosted
+      online: true
+      attrs:
+        maven:
+          versionPolicy: SNAPSHOT
+          layoutPolicy: STRICT
+        storage:
+          blobStoreName: maven
+          strictContentTypeValidation: true
+          writePolicy: ALLOW
+        component:
+          proprietaryComponents: true
+    - name: maven-releases
+      recipeName: maven2-hosted
+      online: true
+      attrs:
+        maven:
+          versionPolicy: RELEASE
+          layoutPolicy: STRICT
+        storage:
+          blobStoreName: maven
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
+        component:
+          proprietaryComponents: true
+    - name: maven-central
+      recipeName: maven2-proxy
+      online: true
+      attrs:
+        maven:
+          versionPolicy: RELEASE
+          layoutPolicy: PERMISSIVE
+        proxy:
+          remoteUrl: https://repo1.maven.org/maven2/
+          contentMaxAge: -1
+          metadataMaxAge: 1440
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: maven-ext
+          strictContentTypeValidation: false
+        negativeCache:
+          enabled: true
+          timeToLive: 30
+        cleanup:
+          policyName:
+            - cleanup-maven-proxy
+      # routingRule: test-rule
+    - name: maven
+      recipeName: maven2-group
+      online: true
+      attrs:
+        storage:
+          blobStoreName: maven-ext
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - maven-central
+            - maven-snapshots
+            - maven-releases
+    - name: npm-hosted
+      recipeName: npm-hosted
+      online: true
+      attrs:
+        storage:
+          blobStoreName: npm
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
+    - name: npm-proxy
+      recipeName: npm-proxy
+      online: true
+      attrs:
+        proxy:
+          remoteUrl: https://registry.npmjs.org
+          contentMaxAge: 1440
+          metadataMaxAge: 1440
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: npm-ext
+          strictContentTypeValidation: true
+        negativeCache:
+          enabled: true
+          timeToLive: 60
+    - name: npm
+      recipeName: npm-group
+      online: true
+      attrs:
+        storage:
+          blobStoreName: npm-ext
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - npm-proxy
+            - npm-hosted
+    - name: nuget-hosted
+      recipeName: nuget-hosted
+      online: true
+      attrs:
+        storage:
+          blobStoreName: nuget
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
+      routingRule: null
+    - name: nuget-proxy
+      recipeName: nuget-proxy
+      online: true
+      attrs:
+        nugetProxy:
+          queryCacheItemMaxAge: 3600
+        proxy:
+          remoteUrl: https://api.nuget.org/v3/index.json
+          contentMaxAge: 1440
+          metadataMaxAge: 1440
+        httpclient:
+          blocked: true
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: nuget-ext
+          strictContentTypeValidation: true
+        negativeCache:
+          enabled: true
+          timeToLive: 1440
+      routingRule: null
+    - name: nuget
+      recipeName: nuget-group
+      online: true
+      attrs:
+        storage:
+          blobStoreName: nuget-ext
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - nuget-proxy
+            - nuget-hosted
+        httpclient: {}
+        nugetProxy: {}
+      routingRule: null
+    - name: pupy-hosted
+      recipeName: pypi-hosted
+      online: true
+      attrs:
+        storage:
+          blobStoreName: pupy
+          strictContentTypeValidation: true
+          writePolicy: ALLOW_ONCE
+      routingRule: null
+    - name: pupy-proxy
+      recipeName: pypi-proxy
+      online: true
+      attrs:
+        proxy:
+          remoteUrl: https://pypi.org/
+          contentMaxAge: 1440
+          metadataMaxAge: 1440
+        httpclient:
+          blocked: false
+          autoBlock: true
+          connection:
+            useTrustStore: false
+        storage:
+          blobStoreName: pupy-ext
+          strictContentTypeValidation: true
+        negativeCache:
+          enabled: true
+          timeToLive: 1440
+      routingRule: null
+    - name: pupy
+      recipeName: pypi-group
+      online: true
+      attrs:
+        storage:
+          blobStoreName: pupy-ext
+          strictContentTypeValidation: true
+        group:
+          memberNames:
+            - pupy-proxy
+            - pupy-hosted
+      routingRule: null
+  pruneOtherRepositories: true
