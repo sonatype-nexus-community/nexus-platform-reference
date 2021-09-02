@@ -1,6 +1,9 @@
 # Never commit any Sonatype License Files
 *.lic
 
+# Never commit the personalised .env file
+.env
+
 # Never commit any generated nGinx content
 # config/nginx-www/*
 
