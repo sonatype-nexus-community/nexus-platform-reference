@@ -48,12 +48,13 @@ services:
   nxiq-proxied:
     image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
-      BASE_URL: "http://iq.localhost"
+      BASE_URL: "${NXLC_FQDN_URL:-http://iq.localhost}"
     networks:
       - platform
     profiles:
-      - cicd
       - proxied
+      - cicd-jenkins
+      - cicd-teamcity
     secrets:
       - admin_password
     volumes:
@@ -118,17 +119,18 @@ services:
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
         NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
     environment:
-      BASE_URL: 'http://repo.localhost'
+      BASE_URL: "${NXRM_FQDN_URL:-http://repo.localhost}"
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
-      NEXUS_IQ_BASE_URL: 'http://iq.localhost:8070'
+      NEXUS_IQ_BASE_URL: "${NXLC_FQDN_URL:-http://iq.localhost}"
     healthcheck:
       << : *nxrm3-healthcheck
     networks:
       - platform
     profiles:
-      - cicd
       - proxied
+      - cicd-jenkins
+      - cicd-teamcity
     secrets:
       - admin_password
     volumes: 
@@ -147,7 +149,7 @@ services:
       - NGINX_PORT=80
     healthcheck:
       test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
-      interval: 5s
+      interval: 15s
       timeout: 2s
       retries: 10
       start_period: 20s
@@ -161,7 +163,7 @@ services:
       - "./config/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./config/nginx-www:/usr/share/nginx/html:ro"
 
-  proxy_cicd:
+  proxy-cicd-jenkins:
     image: "nginx:${NGINX_VERSION:?err}"
     depends_on: 
       - nxrm3-proxied
@@ -172,7 +174,7 @@ services:
       - NGINX_PORT=80
     healthcheck:
       test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
-      interval: 5s
+      interval: 15s
       timeout: 2s
       retries: 10
       start_period: 20s
@@ -181,29 +183,68 @@ services:
     ports:
       - "80:80"
     profiles:
-      - cicd
+      - cicd-jenkins
     volumes:
       - "./config/nginx-cicd.conf:/etc/nginx/nginx.conf:ro"
       - "./config/nginx-www:/usr/share/nginx/html:ro"
 
-# ------- Other non Sonatype Services --------
+  proxy-cicd-teamcity:
+    image: "nginx:${NGINX_VERSION:?err}"
+    depends_on: 
+      - nxrm3-proxied
+      - nxiq-proxied
+      - teamcity-proxied
+    environment:
+      - NGINX_HOST=nexus-platform.localhost
+      - NGINX_PORT=80
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
+      interval: 15s
+      timeout: 2s
+      retries: 10
+      start_period: 20s
+    networks:
+      - platform
+    ports:
+      - "80:80"
+    profiles:
+      - cicd-teamcity
+    volumes:
+      - "./config/nginx-cicd-teamcity.conf:/etc/nginx/nginx.conf:ro"
+      - "./config/nginx-www:/usr/share/nginx/html:ro"
+
+  # ------- Other non Sonatype Services --------
   jenkins-proxied:
     build: ./jenkins
     environment: 
       JAVA_OPTS: '-Djenkins.install.runSetupWizard=false'
-      JENKINS_OPTS: '--argumentsRealm.roles.user=admin --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
+      JENKINS_OPTS: '--prefix=/jenkins --argumentsRealm.roles.user=admin --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
     healthcheck:
-      test: ["CMD", "curl", "--fail", "--silent", "http://localhost/login"]
-      interval: 5s
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost/jenkins/login"]
+      interval: 15s
       timeout: 2s
       retries: 10
       start_period: 30s
     networks:
       - platform
     profiles:
-      - cicd
+      - cicd-jenkins
     volumes:
       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/jenkins:/var/jenkins_home:delegated'
+
+  teamcity-proxied:
+    build: ./teamcity-server
+    # environment:
+      # TEAMCITY_HTTPS_PROXY_ENABLED: 'true'
+    networks:
+      - platform
+      - teamcity
+    profiles:
+      - cicd-teamcity
+    volumes: 
+      - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/data:/data/teamcity_server/datadir'
+      - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/logs:/opt/teamcity/logs'
     
 networks:
-    platform:
+  platform:
+  teamcity:
