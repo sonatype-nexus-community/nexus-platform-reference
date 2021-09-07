@@ -234,8 +234,6 @@ services:
 
   teamcity-proxied:
     build: ./teamcity-server
-    # environment:
-      # TEAMCITY_HTTPS_PROXY_ENABLED: 'true'
     networks:
       - platform
       - teamcity
@@ -244,6 +242,24 @@ services:
     volumes: 
       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/data:/data/teamcity_server/datadir'
       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/logs:/opt/teamcity/logs'
+
+  teamcity-agent-linux:
+    build: ./teamcity-agent
+    environment:
+      AGENT_NAME: 'Linux Agent'
+      SERVER_URL: 'http://teamcity-proxied:8111/teamcity'
+    networks:
+      - teamcity
+    profiles:
+      - cicd-teamcity
+
+  # teamcity-agent-windows:
+  #   build: ./teamcity-agent-windows
+  #   environment:
+  #     AGENT_NAME: 'Windows Agent'
+  #     SERVER_URL: 'http://teamcity-proxied:8111'
+  #   networks:
+  #     - teamcity
     
 networks:
   platform:
