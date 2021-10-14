@@ -43,11 +43,21 @@ For most of the reference architecutres, you'll need a Sonatype license. If you 
 
 # Reference Architecture Profiles
 
-| Profile Name  | License Required | Nexus Platform                                | Nexus Repo                               | Nexus Lifecycle                        | Description                                                                                           |
-| ------------- | ---------------- | --------------------------------------------- | ---------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `proxied`     | Yes              | Yes - [here](http://nexus-platform.localhost) | Yes [here](http://repo.localhost/)       | Yes [here](http://iq.localhost/)       | Both Nexus Repository Pro and Nexus Lifecycle available behind an nGinx reverse proxy.                |
-| `direct`      | Yes              | No                                            | Yes - [here](http://repo.localhost:8081) | Yes - [here](http://iq.localhost:8070) | Both Nexus Repository Pro and Nexus Lifecycle available directly via `localhost` addressed over HTTP. |
-| `repoOssDemo` | No               | No                                            | Yes - [here](http://repo.localhost:8081) | No                                     | Nexus Repo OSS will be started.                                                                       |
+| Profile Name    | License Required | Nexus Platform                                | Nexus Repo                               | Nexus Lifecycle                        | Description                                                                                           |
+| --------------- | ---------------- | --------------------------------------------- | ---------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `proxied`       | Yes              | Yes - [here](http://nexus-platform.localhost) | Yes [here](http://repo.localhost/)       | Yes [here](http://iq.localhost/)       | Both Nexus Repository Pro and Nexus Lifecycle available behind an nGinx reverse proxy.                |
+| `direct`        | Yes              | No                                            | Yes - [here](http://repo.localhost:8081) | Yes - [here](http://iq.localhost:8070) | Both Nexus Repository Pro and Nexus Lifecycle available directly via `localhost` addressed over HTTP. |
+| `repoOssDemo`   | No               | No                                            | Yes - [here](http://repo.localhost:8081) | No                                     | Nexus Repo OSS will be started.                                                                       |
+| `cicd-jenkins`  | Yes              | Yes - [here](http://nexus-platform.localhost) | Yes [here](http://repo.localhost/)       | Yes [here](http://iq.localhost/)       | Includes a Jenkins [here](http://nexus-platform/jenkins)                                              |
+| `cicd-teamcity` | Yes              | Yes - [here](http://nexus-platform.localhost) | Yes [here](http://repo.localhost/)       | Yes [here](http://iq.localhost/)       | Includes a TeamCity Server [here](http://nexus-platform/teamcity)                                     |
+
+## Additional Sub Profiles
+
+The following profiles can be stood up in parallel to the `proxied` profile to provide further services:
+
+| Profile Name | Endpoints                                                                                                                  | Description                   |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `swagger`    | [Swagger Editor](http://nexus-platform.localhost/swagger-editor), [Swagger UI](http://nexus-platform.localhost/swagger-ui) | Swagger Editor and Swagger UI |
 
 
 # Acknowledgments
