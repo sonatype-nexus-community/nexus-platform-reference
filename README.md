@@ -51,6 +51,14 @@ For most of the reference architecutres, you'll need a Sonatype license. If you 
 | `cicd-jenkins`  | Yes              | Yes - [here](http://nexus-platform.localhost) | Yes [here](http://repo.localhost/)       | Yes [here](http://iq.localhost/)       | Includes a Jenkins [here](http://nexus-platform/jenkins)                                              |
 | `cicd-teamcity` | Yes              | Yes - [here](http://nexus-platform.localhost) | Yes [here](http://repo.localhost/)       | Yes [here](http://iq.localhost/)       | Includes a TeamCity Server [here](http://nexus-platform/teamcity)                                     |
 
+## Additional Sub Profiles
+
+The following profiles can be stood up in parallel to the `proxied` profile to provide further services:
+
+| Profile Name | Endpoints                                                                                                                  | Description                   |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `swagger`    | [Swagger Editor](http://nexus-platform.localhost/swagger-editor), [Swagger UI](http://nexus-platform.localhost/swagger-ui) | Swagger Editor and Swagger UI |
+
 
 # Acknowledgments
 This project makes use of the following open source libraries/plugins:

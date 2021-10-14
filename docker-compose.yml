@@ -236,6 +236,24 @@ services:
     volumes:
       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/jenkins:/var/jenkins_home:delegated'
 
+  swagger-editor:
+    image: "swaggerapi/swagger-editor:latest"
+    environment:
+      BASE_URL: /swagger-editor
+    networks:
+      - platform
+    profiles:
+      - swagger
+
+  swagger-ui:
+    image: "swaggerapi/swagger-ui:latest"
+    environment:
+      BASE_URL: /swagger-ui
+    networks:
+      - platform
+    profiles:
+      - swagger
+
   teamcity-proxied:
     build: ./teamcity-server
     networks:
