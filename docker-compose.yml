@@ -1,26 +1,29 @@
 version: '3.9'
 
-x-env-license: &env-license-volume
-  '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
+x-env-license: &env-license-volume '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
 
-x-nxrm3-healthcheck: &nxrm3-healthcheck
-  test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8081/service/rest/v1/status/writable"]
+x-nxrm3-healthcheck:
+  &nxrm3-healthcheck
+  test:
+    [
+      "CMD",
+      "curl",
+      "--fail",
+      "--silent",
+      "http://localhost:8081/service/rest/v1/status/writable"
+    ]
   interval: 10s
   timeout: 10s
   retries: 10
   start_period: 40s
 
-x-nxrm3-volume-nexus-properties: &nxrm3-volume-nexus-properties
-  './config/nexus-repo.properties:/nexus-data/etc/nexus.properties'
+x-nxrm3-volume-nexus-properties: &nxrm3-volume-nexus-properties './config/nexus-repo.properties:/nexus-data/etc/nexus.properties'
 
-x-nxrm3-volume-casc-config: &nxrm3-volume-casc-config
-  './config/nexus-repo-casc.yaml:/opt/nexus.yml:ro'
+x-nxrm3-volume-casc-config: &nxrm3-volume-casc-config './config/nexus-repo-casc.yaml:/opt/nexus.yml:ro'
 
-x-nxrm3-volume-casc-config-oss: &nxrm3-volume-casc-config-oss
-  './config/nexus-repo-casc-oss.yaml:/opt/nexus.yml:ro'
+x-nxrm3-volume-casc-config-oss: &nxrm3-volume-casc-config-oss './config/nexus-repo-casc-oss.yaml:/opt/nexus.yml:ro'
 
-x-nxrm3-volume-data: &nxrm3-volume-data
-  '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/nexus-data:/nexus-data:delegated'
+x-nxrm3-volume-data: &nxrm3-volume-data '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/nexus-data:/nexus-data:delegated'
 
 secrets:
   admin_password:
@@ -43,7 +46,8 @@ services:
       - *env-license-volume
       - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
-      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-\
+        server/log:delegated"
 
   nxiq-proxied:
     image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
@@ -61,10 +65,11 @@ services:
       - *env-license-volume
       - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
-      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
-    
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-\
+        server/log:delegated"
+
   nxrm3_direct:
-    build: 
+    build:
       context: ./nxrm3
       args:
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
@@ -75,7 +80,7 @@ services:
       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
       NEXUS_IQ_BASE_URL: 'http://iq.localhost:8070'
     healthcheck:
-      << : *nxrm3-healthcheck
+      <<: *nxrm3-healthcheck
     ports:
       - '8081:8081'
       - '8083:8083'
@@ -83,25 +88,24 @@ services:
       - direct
     secrets:
       - admin_password
-    volumes: 
+    volumes:
       - *env-license-volume
       - *nxrm3-volume-nexus-properties
       - *nxrm3-volume-casc-config
       - *nxrm3-volume-data
 
   nxrm3_direct_oss:
-    build: 
+    build:
       context: ./nxrm3
       args:
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
         NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
     environment:
-    environment:
       BASE_URL: 'http://repo.localhost:8081'
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
     healthcheck:
-      << : *nxrm3-healthcheck
+      <<: *nxrm3-healthcheck
     ports:
       - '8081:8081'
       - '8083:8083'
@@ -109,13 +113,13 @@ services:
       - repoOssDemo
     secrets:
       - admin_password
-    volumes: 
+    volumes:
       - *nxrm3-volume-nexus-properties
       - *nxrm3-volume-casc-config-oss
       - *nxrm3-volume-data
 
   nxrm3-proxied:
-    build: 
+    build:
       context: ./nxrm3
       args:
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
@@ -126,7 +130,7 @@ services:
       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
       NEXUS_IQ_BASE_URL: "${NXLC_FQDN_URL:-http://iq.localhost}"
     healthcheck:
-      << : *nxrm3-healthcheck
+      <<: *nxrm3-healthcheck
     networks:
       - platform
     ports:
@@ -137,7 +141,7 @@ services:
       - cicd-teamcity
     secrets:
       - admin_password
-    volumes: 
+    volumes:
       - *env-license-volume
       - *nxrm3-volume-nexus-properties
       - *nxrm3-volume-casc-config
@@ -145,14 +149,21 @@ services:
 
   proxy:
     image: "nginx:${NGINX_VERSION:?err}"
-    depends_on: 
+    depends_on:
       - nxrm3-proxied
       - nxiq-proxied
     environment:
       - NGINX_HOST=nexus-platform.localhost
       - NGINX_PORT=80
     healthcheck:
-      test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "--silent",
+          "http://localhost"
+        ]
       interval: 15s
       timeout: 2s
       retries: 10
@@ -169,7 +180,7 @@ services:
 
   proxy-cicd-jenkins:
     image: "nginx:${NGINX_VERSION:?err}"
-    depends_on: 
+    depends_on:
       - nxrm3-proxied
       - nxiq-proxied
       - jenkins-proxied
@@ -177,7 +188,14 @@ services:
       - NGINX_HOST=nexus-platform.localhost
       - NGINX_PORT=80
     healthcheck:
-      test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "--silent",
+          "http://localhost"
+        ]
       interval: 15s
       timeout: 2s
       retries: 10
@@ -194,7 +212,7 @@ services:
 
   proxy-cicd-teamcity:
     image: "nginx:${NGINX_VERSION:?err}"
-    depends_on: 
+    depends_on:
       - nxrm3-proxied
       - nxiq-proxied
       - teamcity-proxied
@@ -202,7 +220,14 @@ services:
       - NGINX_HOST=nexus-platform.localhost
       - NGINX_PORT=80
     healthcheck:
-      test: ["CMD", "curl", "--fail", "--silent", "http://localhost"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "--silent",
+          "http://localhost"
+        ]
       interval: 15s
       timeout: 2s
       retries: 10
@@ -220,11 +245,19 @@ services:
   # ------- Other non Sonatype Services --------
   jenkins-proxied:
     build: ./jenkins
-    environment: 
+    environment:
       JAVA_OPTS: '-Djenkins.install.runSetupWizard=false'
-      JENKINS_OPTS: '--prefix=/jenkins --argumentsRealm.roles.user=admin --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
+      JENKINS_OPTS: '--prefix=/jenkins --argumentsRealm.roles.user=admin
+        --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
     healthcheck:
-      test: ["CMD", "curl", "--fail", "--silent", "http://localhost/jenkins/login"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "--silent",
+          "http://localhost/jenkins/login"
+        ]
       interval: 15s
       timeout: 2s
       retries: 10
@@ -261,7 +294,7 @@ services:
       - teamcity
     profiles:
       - cicd-teamcity
-    volumes: 
+    volumes:
       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/data:/data/teamcity_server/datadir'
       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/logs:/opt/teamcity/logs'
 
@@ -274,7 +307,6 @@ services:
       - teamcity
     profiles:
       - cicd-teamcity
-
   # teamcity-agent-windows:
   #   build: ./teamcity-agent-windows
   #   environment:
@@ -282,7 +314,7 @@ services:
   #     SERVER_URL: 'http://teamcity-proxied:8111'
   #   networks:
   #     - teamcity
-    
+
 networks:
-  platform:
-  teamcity:
+  platform: null
+  teamcity: null
