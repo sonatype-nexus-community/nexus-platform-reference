@@ -35,13 +35,13 @@ systemConfig:
       notes: Update default session timeouts
       attrs:
         title: Nexus Repository Manager
-        longRequestTimeout: '180'
-        requestTimeout: '60'
-        statusIntervalAnonymous: '60'
-        statusIntervalAuthenticated: '5'
-        searchRequestTimeout: '0'
-        sessionTimeout: '300'
-        debugAllowed: 'true'
+        longRequestTimeout: "180"
+        requestTimeout: "60"
+        statusIntervalAnonymous: "60"
+        statusIntervalAuthenticated: "5"
+        searchRequestTimeout: "0"
+        sessionTimeout: "300"
+        debugAllowed: "true"
     - type: OutreachManagementCapability
       notes: Disable the survey on the main page
       enabled: false
@@ -92,7 +92,7 @@ securityConfig:
   rolesToDelete: []
   pruneOtherUsers: false
   users:
-    - id: "anonymous"   # keep that account without any changes
+    - id: "anonymous" # keep that account without any changes
       authSource: default
     - id: admin
       authSource: default
@@ -104,7 +104,6 @@ securityConfig:
       password: "${file:/run/secrets/admin_password}"
       updateExistingPassword: true
   usersToDelete: []
-  pruneOtherUsers: true
 repositoryConfig:
   # Blobstores
   blobStores:
@@ -195,7 +194,7 @@ repositoryConfig:
     - name: cleanup-maven-proxy
       format: maven2
       mode: delete
-      notes: ''
+      notes: ""
       criteria:
         lastDownloaded: "864000"
         lastBlobUpdated: "2592000"
