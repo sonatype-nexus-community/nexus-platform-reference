@@ -10,7 +10,7 @@ licenseFile: /sonatype-license.lic
 
 # Base URL of the Sonatype CLM server for user facing links back to the server.
 # If a mail server is configured, then the baseUrl setting must also be enabled and correct as otherwise notification emails cannot be sent.
-baseUrl: http://iq.localhost:8070
+baseUrl: ${BASE_URL}
 
 # Hour of the day(0-23) to schedule Policy Monitoring execution. The default is midnight.
 #policyMonitoringHour: 0
@@ -203,7 +203,6 @@ logging:
 
       # The number of archived files to keep.
       archivedFileCount: 5
-
 # Passphrase used to encrypt the Webhook Secret Keys
 #webhookSecretPassphrase: "^d1swM!FF&qQ"
 
@@ -213,7 +212,7 @@ logging:
 # maxPoolSize: 500
 
 # Sample data is created for new installs.
-createSampleData: true
+#createSampleData: true
 
 #defaultBranchMonitoring:
 #  startTime: 12:50
@@ -221,6 +220,6 @@ createSampleData: true
 
 # Undocumented feature flags to disable new continuous monitoring in version
 # 120
-features:
-  prCommentMonitoring: false
-  defaultBranchMonitoring: false
+#features:
+#  prCommentMonitoring: false
+#  defaultBranchMonitoring: false
