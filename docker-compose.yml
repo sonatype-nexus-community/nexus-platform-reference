@@ -34,7 +34,7 @@ services:
   nxiq_direct:
     image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
-      BASE_URL: "http://iq.localhost:8070"
+      JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost:8070} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
     ports:
       - "8070:8070"
       - "8071:8071"
@@ -46,13 +46,12 @@ services:
       - *env-license-volume
       - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
-      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-\
-        server/log:delegated"
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
 
   nxiq-proxied:
     image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
-      BASE_URL: "${NXLC_FQDN_URL:-http://iq.localhost}"
+      JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
     networks:
       - platform
     profiles:
@@ -65,8 +64,7 @@ services:
       - *env-license-volume
       - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
-      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-\
-        server/log:delegated"
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
 
   nxrm3_direct:
     build:
@@ -247,8 +245,7 @@ services:
     build: ./jenkins
     environment:
       JAVA_OPTS: '-Djenkins.install.runSetupWizard=false'
-      JENKINS_OPTS: '--prefix=/jenkins --argumentsRealm.roles.user=admin
-        --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
+      JENKINS_OPTS: '--prefix=/jenkins --argumentsRealm.roles.user=admin --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
     healthcheck:
       test:
         [
