@@ -12,7 +12,7 @@ If you don't have a trial license and would like one [contact Sonatype](https://
 
 When we refer to the Nexus Platform, we actually refer to three of Sonatype's core-products and their associated add-on packs. These are:
 
-1. Neuxs Repository (either [Neuxs Repository OSS](https://www.sonatype.com/products/repository-oss) or [Nexus Repository Pro](https://www.sonatype.com/products/repository-pro?))
+1. Nexus Repository (either [Nexus Repository OSS](https://www.sonatype.com/products/repository-oss) or [Nexus Repository Pro](https://www.sonatype.com/products/repository-pro?))
 2. [Nexus Lifecycle](https://www.sonatype.com/products/open-source-security-dependency-management) and it's add-on packs:
     - [Advanced Development Pack](https://www.sonatype.com/product/advanced-development-pack)
     - [Advanced Legal Pack](https://www.sonatype.com/products/advanced-legal-pack)
