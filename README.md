@@ -4,7 +4,7 @@ This repo contains `docker-compose` files associated sample configuration for qu
 
 Ideal if you want to get hands on quickly :-)
 
-Unless you have a license from [Sonatype](https://www.sonatype.com), you will only be able to use [Neuxs Repository OSS](https://www.sonatype.com/products/repository-oss).
+Unless you have a license from [Sonatype](https://www.sonatype.com), you will only be able to use [Nexus Repository OSS](https://www.sonatype.com/products/repository-oss).
 
 If you don't have a trial license and would like one [contact Sonatype](https://www.sonatype.com).
 
@@ -25,7 +25,7 @@ For the full suite of products - check out [www.sonatype.com](https://www.sonaty
 
 We utilise [docker-compose profiles](https://docs.docker.com/compose/profiles/) to allow you to quickly stand up the required containers to realise a specific refernece architecture.
 
-Assuming you have [Docker Desktop]([https://](https://www.docker.com/products/docker-desktop) 19.03.0+ (or similar) installed, you can simply run `docker-compose` passing the required profile. An example using the `proxied` profile might be:
+Assuming you have [Docker Desktop](https://(https://www.docker.com/products/docker-desktop) 19.03.0+ (or similar) installed, you can simply run `docker-compose` passing the required profile. An example using the `proxied` profile might be:
 
 ```
 docker-compose --profile=proxied up -d
