@@ -4,7 +4,7 @@ This repo contains `docker-compose` files associated sample configuration for qu
 
 Ideal if you want to get hands on quickly :-)
 
-Unless you have a license from [Sonatype](https://www.sonatype.com), you will only be able to use [Neuxs Repository OSS](https://www.sonatype.com/products/repository-oss).
+Unless you have a license from [Sonatype](https://www.sonatype.com), you will only be able to use [Nexus Repository OSS](https://www.sonatype.com/products/repository-oss).
 
 If you don't have a trial license and would like one [contact Sonatype](https://www.sonatype.com).
 
@@ -12,7 +12,7 @@ If you don't have a trial license and would like one [contact Sonatype](https://
 
 When we refer to the Nexus Platform, we actually refer to three of Sonatype's core-products and their associated add-on packs. These are:
 
-1. Neuxs Repository (either [Neuxs Repository OSS](https://www.sonatype.com/products/repository-oss) or [Nexus Repository Pro](https://www.sonatype.com/products/repository-pro?))
+1. Nexus Repository (either [Nexus Repository OSS](https://www.sonatype.com/products/repository-oss) or [Nexus Repository Pro](https://www.sonatype.com/products/repository-pro?))
 2. [Nexus Lifecycle](https://www.sonatype.com/products/open-source-security-dependency-management) and it's add-on packs:
     - [Advanced Development Pack](https://www.sonatype.com/product/advanced-development-pack)
     - [Advanced Legal Pack](https://www.sonatype.com/products/advanced-legal-pack)
@@ -25,7 +25,7 @@ For the full suite of products - check out [www.sonatype.com](https://www.sonaty
 
 We utilise [docker-compose profiles](https://docs.docker.com/compose/profiles/) to allow you to quickly stand up the required containers to realise a specific refernece architecture.
 
-Assuming you have [Docker Desktop]([https://](https://www.docker.com/products/docker-desktop) 19.03.0+ (or similar) installed, you can simply run `docker-compose` passing the required profile. An example using the `proxied` profile might be:
+Assuming you have [Docker Desktop](https://www.docker.com/products/docker-desktop) 19.03.0+ (or similar) installed, you can simply run `docker-compose` passing the required profile. An example using the `proxied` profile might be:
 
 ```
 docker-compose --profile=proxied up -d
