@@ -79,3 +79,8 @@ Remember:
 - Phew, that was easier than I thought. Last but not least of all:
 
 Have fun creating and using this utility to quikcly get hands-on with Nexus Repository and Nexus Lifecycle. We are glad to have you here!
+
+
+### Infrastructure model
+
+![Infrastructure model](.infragenie/infrastructure_model.png)
