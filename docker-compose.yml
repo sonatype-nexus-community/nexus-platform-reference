@@ -2,6 +2,8 @@ version: '3.9'
 
 x-env-license: &env-license-volume '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
 
+x-env-fortify-license: &env-fortify-license-volume '${FORTIFY_SSC_LICENSE_PATH:?err}:/fortify/fortify.license'
+
 x-nxrm3-healthcheck:
   &nxrm3-healthcheck
   test:
@@ -312,6 +314,24 @@ services:
   #   networks:
   #     - teamcity
 
+  fortify_ssc:
+    command: bash -c "cp /fortify.license /fortify && start_demo.sh"
+    image: "${FORTIFY_DOCKER_IMAGE_REPO}/fortifydocker/sscdemo:${FORTIFY_SSC_VERSION}"
+    environment:
+      - SSC_MAX_MEM_MB=8192
+      - SSC_CONTEXT=/ssc
+    ports:
+      - '2212:8080'
+    profiles:
+      - fortify-ssc
+    volumes:
+      - "ssc-demo-data:/fortify"
+      - "${FORTIFY_SSC_LICENSE_PATH}:/fortify.license"
+
 networks:
   platform: null
   teamcity: null
+
+volumes:
+  ssc-demo-data:
+    driver: local
