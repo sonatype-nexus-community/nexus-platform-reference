@@ -1,0 +1,26 @@
+version: '3.9'
+
+x-env-license: &env-license-volume '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
+
+secrets:
+  admin_password:
+    file: ../../config/admin_password
+
+services:
+
+  nxiq_direct:
+    image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
+    environment:
+      JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost:8070} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
+    ports:
+      - "8070:8070"
+      - "8071:8071"
+    profiles:
+      - direct
+    secrets:
+      - admin_password
+    volumes:
+      - *env-license-volume
+      - "../../config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
+      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"

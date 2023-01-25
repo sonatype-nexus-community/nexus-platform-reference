@@ -1,0 +1,52 @@
+version: '3.9'
+
+x-env-license: &env-license-volume '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
+
+x-nxrm3-volume-nexus-properties: &nxrm3-volume-nexus-properties '../../config/nexus-repo.properties:/nexus-data/etc/nexus.properties'
+
+x-nxrm3-volume-casc-config: &nxrm3-volume-casc-config '../../config/nexus-repo-casc.yaml:/opt/nexus.yml:ro'
+
+x-nxrm3-volume-data: &nxrm3-volume-data '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/nexus-data:/nexus-data:delegated'
+
+secrets:
+  admin_password:
+    file: ../../config/admin_password
+
+services:
+
+  nxrm3_direct:
+    build:
+      context: ../../nxrm3
+      args:
+        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
+        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
+    environment:
+      BASE_URL: 'https://repo.phorton.eu.ngrok.io'
+      NEXUS_SECURITY_RANDOMPASSWORD: 'false'
+      NEXUS_CASC_CONFIG: '/opt/nexus.yml'
+      NEXUS_IQ_BASE_URL: 'https://iq.phorton.eu.ngrok.io'
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "--silent",
+          "http://localhost:8081/service/rest/v1/status/writable"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+    ports:
+      - '8081:8081'
+      - '8083:8083'
+    profiles:
+      - direct
+    secrets:
+      - admin_password
+    volumes:
+      - *env-license-volume
+      - *nxrm3-volume-nexus-properties
+      - *nxrm3-volume-casc-config
+      - *nxrm3-volume-data
