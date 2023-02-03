@@ -55,10 +55,12 @@ For most of the reference architecutres, you'll need a Sonatype license. If you 
 
 The following profiles can be stood up in parallel to the `proxied` profile to provide further services:
 
-| Profile Name | Endpoints                                                                                                                  | Description                   |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `swagger`    | [Swagger Editor](http://nexus-platform.localhost/swagger-editor), [Swagger UI](http://nexus-platform.localhost/swagger-ui) | Swagger Editor and Swagger UI |
+| Profile Name  | Endpoints                                                                                                                  | Description                   |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `fortify-ssc` | [Fortify SSC](http://localhost:2212)                                                                                       | Fortify SSC                   |
+| `swagger`     | [Swagger Editor](http://nexus-platform.localhost/swagger-editor), [Swagger UI](http://nexus-platform.localhost/swagger-ui) | Swagger Editor and Swagger UI |
 
+You can run multiple profiles together!
 
 # Acknowledgments
 This project makes use of the following open source libraries/plugins:
