@@ -1,0 +1,18 @@
+version: '3.9'
+
+secrets:
+  admin_password:
+    file: ../../config/admin_password
+
+services:
+
+  nxiq:
+    image: "sonatype/nexus-iq-server:1.155.0"
+    ports:
+      - "8070:8070"
+    secrets:
+      - admin_password
+    # volumes:
+    #   - "../../config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
+    #   - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
+    #   - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
