@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+
+  nxiq:
+    image: "sonatype/nexus-iq-server:1.155.0"
+    ports:
+      - "8070:8070"
