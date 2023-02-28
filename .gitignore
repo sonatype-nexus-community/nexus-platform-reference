@@ -9,6 +9,7 @@
 
 # Never commit any Docker Volume data (default path we use)
 data/*
+**/data/*
 
 # Ignore developer IDE files
 /.vscode
