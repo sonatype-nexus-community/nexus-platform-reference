@@ -34,7 +34,7 @@ secrets:
 services:
 
   nxiq_direct:
-    image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
+    image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
       JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost:8070} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
     ports:
@@ -51,7 +51,7 @@ services:
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
 
   nxiq-proxied:
-    image: "sonatype/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
+    image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
       JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
     networks:
@@ -72,8 +72,11 @@ services:
     build:
       context: ./nxrm3
       args:
+        NEXUS_DOCKER_IMAGE_ORGANIZATION: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}"
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
         NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
+      platforms:
+        - "linux/arm64"
     environment:
       BASE_URL: 'http://repo.localhost:8081'
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
@@ -98,6 +101,7 @@ services:
     build:
       context: ./nxrm3
       args:
+        NEXUS_DOCKER_IMAGE_ORGANIZATION: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}"
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
         NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
     environment:
@@ -122,6 +126,7 @@ services:
     build:
       context: ./nxrm3
       args:
+        NEXUS_DOCKER_IMAGE_ORGANIZATION: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}"
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
         NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
     environment:
@@ -286,6 +291,7 @@ services:
     profiles:
       - swagger
 
+  # NOT ARM COMPATIBLE
   teamcity-proxied:
     build: ./teamcity-server
     networks:
@@ -297,6 +303,7 @@ services:
       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/data:/data/teamcity_server/datadir'
       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/logs:/opt/teamcity/logs'
 
+  # NOT ARM COMPATIBLE
   teamcity-agent-linux:
     build: ./teamcity-agent
     environment:
