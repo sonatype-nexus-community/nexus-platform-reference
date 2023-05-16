@@ -1,1 +1,1 @@
-nexus-jenkins-plugin:3.13.20220124-164651.0b71b72
+nexus-jenkins-plugin:3.16.491.v77a_2f8921c88
