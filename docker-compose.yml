@@ -370,7 +370,7 @@ services:
     environment:
       - IQ_SERVER_URL=${NXLC_FQDN_URL:-http://iq.localhost:8070}
       - PORT=3000
-      - TEAMS_WEBHOOK_URL=https://sonatype.webhook.office.com/webhookb2/08a13879-e2d2-4f51-b98b-2f37a7c51978@bd28fc0b-f086-430f-ac20-16268536c81f/IncomingWebhook/0e5420a60a4f41cfa4dd2c1fff4aaa8a/4eb04242-0ece-4a4d-a5f4-092c2e8c27ea
+      - TEAMS_WEBHOOK_URL=${MS_TEAMS_WEBHOOK}
     ports:
       - '3000:3000'
     profiles:
