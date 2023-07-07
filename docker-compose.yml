@@ -35,6 +35,9 @@ services:
 
   nxiq_direct:
     image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     environment:
       JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost:8070} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
     ports:
@@ -78,10 +81,10 @@ services:
       platforms:
         - "linux/arm64"
     environment:
-      BASE_URL: 'http://repo.localhost:8081'
+      BASE_URL: "${NXRM_FQDN_URL:-http://repo.localhost:8081}"
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
       NEXUS_CASC_CONFIG: '/opt/nexus.yml'
-      NEXUS_IQ_BASE_URL: 'http://iq.localhost:8070'
+      NEXUS_IQ_BASE_URL: "${NXLC_FQDN_URL:-http://iq.localhost:8070}"
     healthcheck:
       <<: *nxrm3-healthcheck
     ports:
@@ -361,6 +364,17 @@ services:
     volumes:
       - "ssc-demo-data:/fortify"
       - "${FORTIFY_SSC_LICENSE_PATH}:/fortify.license"
+
+  webhook-teams:
+    image: sonatypecommunity/sonatype-teams-webhook-handler:latest
+    environment:
+      - IQ_SERVER_URL=${NXLC_FQDN_URL:-http://iq.localhost:8070}
+      - PORT=3000
+      - TEAMS_WEBHOOK_URL=https://sonatype.webhook.office.com/webhookb2/08a13879-e2d2-4f51-b98b-2f37a7c51978@bd28fc0b-f086-430f-ac20-16268536c81f/IncomingWebhook/0e5420a60a4f41cfa4dd2c1fff4aaa8a/4eb04242-0ece-4a4d-a5f4-092c2e8c27ea
+    ports:
+      - '3000:3000'
+    profiles:
+      - webhooks
 
 networks:
   platform: null
