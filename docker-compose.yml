@@ -4,8 +4,7 @@ x-env-license: &env-license-volume '${NEXUS_LICENSE_PATH:?err}:/sonatype-license
 
 x-env-fortify-license: &env-fortify-license-volume '${FORTIFY_SSC_LICENSE_PATH:?err}:/fortify/fortify.license'
 
-x-nxrm3-healthcheck:
-  &nxrm3-healthcheck
+x-nxrm3-healthcheck: &nxrm3-healthcheck
   test:
     [
       "CMD",
@@ -26,6 +25,7 @@ x-nxrm3-volume-casc-config: &nxrm3-volume-casc-config './config/nexus-repo-casc.
 x-nxrm3-volume-casc-config-oss: &nxrm3-volume-casc-config-oss './config/nexus-repo-casc-oss.yaml:/opt/nexus.yml:ro'
 
 x-nxrm3-volume-data: &nxrm3-volume-data '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/nexus-data:/nexus-data:delegated'
+
 
 secrets:
   admin_password:
@@ -72,14 +72,7 @@ services:
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
 
   nxrm3_direct:
-    build:
-      context: ./nxrm3
-      args:
-        NEXUS_DOCKER_IMAGE_ORGANIZATION: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}"
-        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
-        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
-      platforms:
-        - "linux/arm64"
+    image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus3:${NEXUS_REPOSITORY_VERSION:?err}"
     environment:
       BASE_URL: "${NXRM_FQDN_URL:-http://repo.localhost:8081}"
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
@@ -154,6 +147,7 @@ services:
       - *nxrm3-volume-nexus-properties
       - *nxrm3-volume-casc-config
       - *nxrm3-volume-data
+
 
   proxy:
     image: "nginx:${NGINX_VERSION:?err}"
@@ -365,16 +359,18 @@ services:
       - "ssc-demo-data:/fortify"
       - "${FORTIFY_SSC_LICENSE_PATH}:/fortify.license"
 
-  webhook-teams:
-    image: sonatypecommunity/sonatype-teams-webhook-handler:latest
+  webhook-handler:
+    image: sonatypecommunity/sonatype-webhook-handler:1.1.1
     environment:
+      - CONFIG_FILE_PATH=/config.json
       - IQ_SERVER_URL=${NXLC_FQDN_URL:-http://iq.localhost:8070}
       - PORT=3000
-      - TEAMS_WEBHOOK_URL=${MS_TEAMS_WEBHOOK}
     ports:
       - '3000:3000'
     profiles:
       - webhooks
+    volumes:
+      - ${WEBHOOK_HANDLER_CONFIG_PATH}:/config.json:ro
 
 networks:
   platform: null
