@@ -19,6 +19,15 @@ licenseFile: /sonatype-license.lic
 # Enables/disables cross-site request forgery protection. Defaults to true for increased security.
 csrfProtection: false
 
+# PostgreSQL connection
+database:
+  type: ${DATABASE_TYPE}
+  hostname: ${DATABASE_HOSTNAME}
+  port: ${DATABASE_PORT}
+  name: ${DATABASE_NAME}
+  username: ${DATABASE_USERNAME}
+  password: ${DATABASE_PASSWORD}
+
 # A custom fragment to add to the "user-agent" for HTTP calls
 #userAgentSuffix: "example fragment"
 

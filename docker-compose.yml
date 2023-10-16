@@ -26,6 +26,8 @@ x-nxrm3-volume-casc-config-oss: &nxrm3-volume-casc-config-oss './config/nexus-re
 
 x-nxrm3-volume-data: &nxrm3-volume-data '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/nexus-data:/nexus-data:delegated'
 
+x-pgsql-volume-data: &pgsql-volume-data '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/pgdata:/var/lib/postgresql/data/pgdata:delegated'
+
 
 secrets:
   admin_password:
@@ -40,6 +42,12 @@ services:
       - 8.8.4.4
     environment:
       JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost:8070} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
+      DATABASE_TYPE: postgresql
+      DATABASE_HOSTNAME: ${PG_DB_HOST:?err}
+      DATABASE_PORT: ${PG_DB_PORT:-5432}
+      DATABASE_NAME: ${PG_DB_NAME:?err}
+      DATABASE_USERNAME: ${PG_DB_USER:?err}
+      DATABASE_PASSWORD: ${PG_DB_PASS:?err}
     ports:
       - "8070:8070"
       - "8071:8071"
@@ -148,6 +156,15 @@ services:
       - *nxrm3-volume-casc-config
       - *nxrm3-volume-data
 
+  postgres:
+    image: "postgres:16.0-alpine3.18"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - '5432:5432'
+    volumes:
+      - *pgsql-volume-data
 
   proxy:
     image: "nginx:${NGINX_VERSION:?err}"
