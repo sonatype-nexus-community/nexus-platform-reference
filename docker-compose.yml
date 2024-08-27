@@ -36,9 +36,9 @@ services:
             DATABASE_TYPE: postgresql
             DATABASE_HOSTNAME: ${PG_DB_HOST:?err}
             DATABASE_PORT: ${PG_DB_PORT:-5432}
-            DATABASE_NAME: ${PG_DB_NAME:?err}
-            DATABASE_USERNAME: ${PG_DB_USER:?err}
-            DATABASE_PASSWORD: ${PG_DB_PASS:?err}
+            DATABASE_NAME: ${PG_IQ_DB_NAME:?err}
+            DATABASE_USERNAME: ${PG_IQ_DB_USER:?err}
+            DATABASE_PASSWORD: ${PG_IQ_DB_PASS:?err}
         ports:
             - '8070:8070'
             - '8071:8071'
@@ -62,9 +62,9 @@ services:
             DATABASE_TYPE: postgresql
             DATABASE_HOSTNAME: postgres-test
             DATABASE_PORT: ${PG_DB_PORT:-5432}
-            DATABASE_NAME: ${PG_DB_NAME:?err}
-            DATABASE_USERNAME: ${PG_DB_USER:?err}
-            DATABASE_PASSWORD: ${PG_DB_PASS:?err}
+            DATABASE_NAME: ${PG_IQ_DB_NAME:?err}
+            DATABASE_USERNAME: ${PG_IQ_DB_USER:?err}
+            DATABASE_PASSWORD: ${PG_IQ_DB_PASS:?err}
         ports:
             - '8070:8070'
             - '8071:8071'
@@ -100,6 +100,10 @@ services:
         image: '${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus3:${NEXUS_REPOSITORY_VERSION:?err}'
         environment:
             BASE_URL: '${NXRM_FQDN_URL:-http://repo.localhost:8081}'
+            INSTALL4J_ADD_VM_PARAMS: '-Dnexus.datastore.enabled'
+            # NEXUS_DATASTORE_NEXUS_JDBCURL: 'jdbc:postgresql://${PG_DB_HOST:?err}\:${PG_DB_PORT:?err}/${PG_RM_DB_NAME:?err}'
+            # NEXUS_DATASTORE_NEXUS_USERNAME: ${PG_RM_DB_USER:?err}
+            # NEXUS_DATASTORE_NEXUS_PASSWORD: ${PG_RM_DB_USER:?err}
             NEXUS_SECURITY_RANDOMPASSWORD: 'false'
             NEXUS_CASC_CONFIG: '/opt/nexus.yml'
             NEXUS_IQ_BASE_URL: '${NXLC_FQDN_URL:-http://iq.localhost:8070}'
