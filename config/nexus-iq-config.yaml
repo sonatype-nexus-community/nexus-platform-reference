@@ -81,8 +81,8 @@ server:
         # The number of archived files to keep.
         archivedFileCount: 5
 # Notification JIRA settings.
-# Note that any user of the Nexus IQ Server will have access to see all projects and applicable issue types available
-# to the configured JIRA account. More details available in the Nexus IQ Server documentation. If enabled, ensure that
+# Note that any user of the Sonatype IQ Server will have access to see all projects and applicable issue types available
+# to the configured JIRA account. More details available in the Sonatype IQ Server documentation. If enabled, ensure that
 # the baseUrl configuration setting is also enabled and correct, because generated tickets contain links to the server.
 #jira:
 # The JIRA server address
