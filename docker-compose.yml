@@ -103,7 +103,7 @@ services:
 
   nxrm3_direct_oss:
     build:
-      context: ./nxrm3
+      context: ./images/nxrm3
       args:
         NEXUS_DOCKER_IMAGE_ORGANIZATION: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}"
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
@@ -128,7 +128,7 @@ services:
 
   nxrm3-proxied:
     build:
-      context: ./nxrm3
+      context: ./images/nxrm3
       args:
         NEXUS_DOCKER_IMAGE_ORGANIZATION: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}"
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
@@ -263,7 +263,7 @@ services:
 
   # ------- Other non Sonatype Services --------
   jenkins-direct:
-    build: ./jenkins
+    build: ./images/jenkins
     environment:
       JAVA_OPTS: '-Djenkins.install.runSetupWizard=false'
       JENKINS_OPTS: '--prefix=/jenkins --argumentsRealm.roles.user=admin --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
@@ -290,7 +290,7 @@ services:
       - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/jenkins:/var/jenkins_home:delegated'
 
   jenkins-proxied:
-    build: ./jenkins
+    build: ./images/jenkins
     environment:
       JAVA_OPTS: '-Djenkins.install.runSetupWizard=false'
       JENKINS_OPTS: '--prefix=/jenkins --argumentsRealm.roles.user=admin --argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin'
@@ -334,7 +334,7 @@ services:
 
   # NOT ARM COMPATIBLE
   teamcity-proxied:
-    build: ./teamcity-server
+    build: ./images/teamcity-server
     networks:
       - platform
       - teamcity
@@ -346,7 +346,7 @@ services:
 
   # NOT ARM COMPATIBLE
   teamcity-agent-linux:
-    build: ./teamcity-agent
+    build: ./images/teamcity-agent
     environment:
       AGENT_NAME: 'Linux Agent'
       SERVER_URL: 'http://teamcity-proxied:8111/teamcity'
@@ -355,7 +355,7 @@ services:
     profiles:
       - cicd-teamcity
   # teamcity-agent-windows:
-  #   build: ./teamcity-agent-windows
+  #   build: ./images/teamcity-agent-windows
   #   environment:
   #     AGENT_NAME: 'Windows Agent'
   #     SERVER_URL: 'http://teamcity-proxied:8111'
