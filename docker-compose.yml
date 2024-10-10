@@ -68,6 +68,12 @@ services:
     image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
       JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
+      DATABASE_TYPE: postgresql
+      DATABASE_HOSTNAME: postgres
+      DATABASE_PORT: ${PG_DB_PORT:-5432}
+      DATABASE_NAME: ${PG_DB_NAME:?err}
+      DATABASE_USERNAME: ${PG_DB_USER:?err}
+      DATABASE_PASSWORD: ${PG_DB_PASS:?err}
     networks:
       - platform
     profiles:
@@ -81,6 +87,9 @@ services:
       - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
       - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   nxrm3_direct:
     image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus3:${NEXUS_REPOSITORY_VERSION:?err}"
