@@ -21,13 +21,16 @@ For the full suite of products - check out [www.sonatype.com](https://www.sonaty
 
 # How does this code work?
 
-We utilise [docker-compose profiles](https://docs.docker.com/compose/profiles/) to allow you to quickly stand up the required containers to realise a specific reference architecture.
+We utilise [docker-compose profiles](https://docs.docker.com/compose/profiles/) to allow you to quickly stand up the required containers to realise a specific reference architecture, customized with local `.env` configuration.
 
-Assuming you have [Docker Desktop](https://www.docker.com/products/docker-desktop) 19.03.0+ (or similar) installed, you can simply run `docker-compose` passing the required profile. An example using the `proxied` profile might be:
+Assuming you have [Docker Desktop](https://www.docker.com/products/docker-desktop) 19.03.0+ (or similar) installed, you can simply copy default `.env-example` to `.env` and run `docker-compose` passing the required profile. An example using the `proxied` profile might be:
 
 ```
+cp .env-example .env
 docker-compose --profile=proxied up -d
 ```
+
+then open [http://nexus-platform.localhost](http://nexus-platform.localhost)
 
 # Providing your Sonatype License
 
