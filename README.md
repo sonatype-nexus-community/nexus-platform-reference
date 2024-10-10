@@ -56,7 +56,6 @@ The following profiles can be stood up in parallel to the `proxied` profile to p
 
 | Profile Name  | Endpoints                                                                                                                  | Description                   |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `fortify-ssc` | [Fortify SSC](http://localhost:2212)                                                                                       | Fortify SSC                   |
 | `swagger`     | [Swagger Editor](http://nexus-platform.localhost/swagger-editor), [Swagger UI](http://nexus-platform.localhost/swagger-ui) | Swagger Editor and Swagger UI |
 
 You can run multiple profiles together!
