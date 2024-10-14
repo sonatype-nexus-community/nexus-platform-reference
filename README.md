@@ -4,7 +4,7 @@ This repo contains `docker-compose` files associated sample configuration for qu
 
 Ideal if you want to get hands on quickly :-)
 
-Unless you have a license from [Sonatype](https://www.sonatype.com), you will only be able to use [Nexus Repository OSS](https://www.sonatype.com/products/repository-oss).
+Unless you have a license from [Sonatype](https://www.sonatype.com), you will only be able to use [Sonatype Nexus Repository OSS](https://www.sonatype.com/products/repository-oss).
 
 If you don't have a trial license and would like one [contact Sonatype](https://www.sonatype.com).
 
@@ -12,10 +12,11 @@ If you don't have a trial license and would like one [contact Sonatype](https://
 
 When we refer to the Sonatype Platform, we actually refer to three of Sonatype's core-products and their associated add-on packs. These are:
 
-1. Nexus Repository (either [Nexus Repository OSS](https://www.sonatype.com/products/repository-oss) or [Nexus Repository Pro](https://www.sonatype.com/products/repository-pro))
+1. Sonatype Nexus Repository (either [Sonatype Nexus Repository OSS](https://www.sonatype.com/products/repository-oss) or [Sonatype Nexus Repository Pro](https://www.sonatype.com/products/repository-pro))
 2. [Sonatype Lifecycle](https://www.sonatype.com/products/open-source-security-dependency-management) and its add-on packs:
     - [Advanced Legal Pack](https://www.sonatype.com/products/advanced-legal-pack)
 3. [Sonatype Repository Firewall](https://www.sonatype.com/products/sonatype-repository-firewall)
+4. [Sonatype SBOM Manager](https://www.sonatype.com/products/sonatype-sbom-manager)
 
 For the full suite of products - check out [www.sonatype.com](https://www.sonatype.com).
 
