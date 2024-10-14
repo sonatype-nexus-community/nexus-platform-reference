@@ -35,9 +35,6 @@ services:
 
   nxiq_direct:
     image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
     environment:
       JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost:8070} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
       DATABASE_TYPE: postgresql
