@@ -2,8 +2,6 @@ version: '3.9'
 
 x-env-license: &env-license-volume '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
 
-x-env-fortify-license: &env-fortify-license-volume '${FORTIFY_SSC_LICENSE_PATH:?err}:/fortify/fortify.license'
-
 x-nxrm3-healthcheck: &nxrm3-healthcheck
   test:
     [
