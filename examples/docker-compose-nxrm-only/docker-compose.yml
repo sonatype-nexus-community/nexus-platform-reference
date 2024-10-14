@@ -16,7 +16,7 @@ services:
 
   nxrm3_direct:
     build:
-      context: ../../nxrm3
+      context: ../../images/nxrm3
       args:
         NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
         NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
