@@ -173,6 +173,9 @@ services:
       - POSTGRES_PASSWORD=${PG_DB_PASS:?err}
       - POSTGRES_DB=${PG_DB_NAME:?err}
       - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - default
+      - platform
     ports:
       - '5432:5432'
     user: '${UID}:${GID}'
@@ -394,5 +397,6 @@ services:
       - ${WEBHOOK_HANDLER_CONFIG_PATH}:/config.json:ro
 
 networks:
+  default: null
   platform: null
   teamcity: null
