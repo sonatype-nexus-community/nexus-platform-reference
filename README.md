@@ -27,7 +27,7 @@ We utilise [docker-compose profiles](https://docs.docker.com/compose/profiles/) 
 Assuming you have [Docker Desktop](https://www.docker.com/products/docker-desktop) 19.03.0+ (or similar) installed, you can simply copy default `.env-example` to `.env` and run `docker-compose` passing the required profile. An example using the `proxied` profile might be:
 
 ```
-cat .env-example | sed -e "s/ORGANIZATION=sonatype/ORGANIZATION=sonatype$([ $(uname -p) = "arm" ] && echo "community")/" -e  "s/^UID=.*$/UID=$UID/g" "s/^GID=.*$/GID=$GID/g"> .env
+cat .env-example | sed -e "s/ORGANIZATION=sonatype/ORGANIZATION=sonatype$([ $(uname -p) = "arm" ] && echo "community")/" -e "s/^UID=.*$/UID=$UID/g" -e "s/^GID=.*$/GID=$GID/g" > .env
 docker-compose --profile=proxied up -d
 ```
 
