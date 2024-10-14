@@ -28,6 +28,8 @@ Assuming you have [Docker Desktop](https://www.docker.com/products/docker-deskto
 
 ```
 cp .env-example .env ; [ $(uname -p) = "arm" ] && cat .env-example | sed 's/ORGANIZATION=sonatype/ORGANIZATION=sonatypecommunity/' > .env
+_UID=id -u && sed -i '' "s/^UID=.*$/UID=$_UID/g" .env
+
 docker-compose --profile=proxied up -d
 ```
 
