@@ -18,7 +18,7 @@ x-nxrm3-healthcheck: &nxrm3-healthcheck
 
 x-nxiq-volume-data: &x-nxiq-volume-data 'nxiq-data:/sonatype-work'
 
-x-nxiq-volume-logs: &x-nxiq-volume-logs 'nxiq-logs:/nxiq-logs'
+x-nxiq-volume-logs: &x-nxiq-volume-logs 'nxiq-logs:/opt/sonatype/nexus-iq-server/log'
 
 x-nxrm3-volume-nexus-properties: &nxrm3-volume-nexus-properties './config/nexus-repo.properties:/nexus-data/etc/nexus.properties'
 
