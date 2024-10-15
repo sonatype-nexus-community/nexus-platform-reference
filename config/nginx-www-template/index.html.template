@@ -118,9 +118,9 @@
                         <dl class="row mt-4">
                             <dt class="col-sm-3">Product Details</dt>
                             <dd class="col-sm-9">
-                                <a href="https://www.sonatype.com/products/lifecycle" target="_blank">Nexus
+                                <a href="https://www.sonatype.com/products/lifecycle" target="_blank">Sonatype
                                     Lifecycle</a><br />
-                                <a href="https://www.sonatype.com/products/firewall" target="_blank">Neuxs Firewall</a>
+                                <a href="https://www.sonatype.com/products/firewall" target="_blank">Sonatype Repository Firewall</a>
                             </dd>
 
                             <dt class="col-sm-3">Documentation</dt>
@@ -151,7 +151,7 @@
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     The administrator username is <strong>admin</strong> and the default password will
-                                    have been set to <strong>admin</strong>, unless you changed the configuration. See
+                                    have been set to <strong>admin123</strong>, unless you changed the configuration. See
                                     the README for further information.
                                 </div>
                             </div>
@@ -223,7 +223,7 @@
         <div class="container">
             <span class="text-muted">This is a Community project and is not officially supported by <a
                     href="https://www.sonatype.com" target="_blank">Sonatype</a>. For help, engage with this <a
-                    href="https://github.com/sonatype-nexus-community/nexus-platform-reference" target="_blank">open
+                    href="https://github.com/sonatype-nexus-community/sonatype-platform-reference" target="_blank">open
                     source project on GitHub</a>.</span>
         </div>
     </footer>
