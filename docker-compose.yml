@@ -46,8 +46,6 @@ services:
       - "8071:8071"
     profiles:
       - direct
-    secrets:
-      - admin_password
     volumes:
       - *env-license-volume
       - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
@@ -73,8 +71,6 @@ services:
       - proxied
       - cicd-jenkins
       - cicd-teamcity
-    secrets:
-      - admin_password
     volumes:
       - *env-license-volume
       - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
