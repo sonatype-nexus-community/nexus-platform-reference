@@ -64,10 +64,6 @@ The following profiles can be stood up in parallel to the `proxied` profile to p
 
 You can run multiple profiles together!
 
-# Acknowledgments
-This project makes use of the following open source libraries/plugins:
-1. [nexus-casc-plugin](https://github.com/asharapov/nexus-casc-plugin) which is licensed under MIT License and is Copyright 2019 Sven Tschui
-
 # License
 See `LICENSE` file for details.
  
@@ -82,4 +78,4 @@ Remember:
 - DO file issues here on GitHub, so that the community can pitch in
 - Phew, that was easier than I thought. Last but not least of all:
 
-Have fun creating and using this utility to quikcly get hands-on with Nexus Repository and Sonatype Lifecycle. We are glad to have you here!
+Have fun creating and using this utility to quickly get hands-on with Sonatype Nexus Repository and Sonatype Lifecycle. We are glad to have you here!
