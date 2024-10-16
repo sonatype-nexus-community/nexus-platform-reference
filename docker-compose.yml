@@ -1,6 +1,6 @@
 version: '3.9'
 
-x-env-license: &env-license-volume '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic'
+x-env-license: &env-license-volume '${NEXUS_LICENSE_PATH:?err}:/sonatype-license.lic:ro'
 
 x-nxrm3-healthcheck: &nxrm3-healthcheck
   test:
@@ -16,15 +16,21 @@ x-nxrm3-healthcheck: &nxrm3-healthcheck
   retries: 10
   start_period: 40s
 
+x-nxiq-volume-data: &x-nxiq-volume-data 'nxiq-data:/sonatype-work'
+
+x-nxiq-volume-logs: &x-nxiq-volume-logs 'nxiq-logs:/var/log/nexus-iq-server'
+
 x-nxrm3-volume-nexus-properties: &nxrm3-volume-nexus-properties './config/nexus-repo.properties:/nexus-data/etc/nexus.properties'
 
 x-nxrm3-volume-casc-config: &nxrm3-volume-casc-config './config/nexus-repo-casc.yaml:/opt/nexus.yml:ro'
 
 x-nxrm3-volume-casc-config-oss: &nxrm3-volume-casc-config-oss './config/nexus-repo-casc-oss.yaml:/opt/nexus.yml:ro'
 
-x-nxrm3-volume-data: &nxrm3-volume-data '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/nexus-data:/nexus-data:delegated'
+x-nxrm3-volume-data: &nxrm3-volume-data 'nxrm-data:/opt/sonatype/sonatype-work'
 
-x-pgsql-volume-data: &pgsql-volume-data '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/pgdata:/var/lib/postgresql/data/pgdata:delegated'
+x-pgsql-volume-data: &pgsql-volume-data 'pg-data:/var/lib/postgresql/data'
+
+x-pgsql-nxrm-volume-data: &pgsql-nxrm-volume-data 'pg-nxrm-data:/var/lib/postgresql/data'
 
 
 secrets:
@@ -33,8 +39,11 @@ secrets:
 
 services:
 
-  nxiq_direct:
+  nxiq-direct:
     image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost:8070} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
       DATABASE_TYPE: postgresql
@@ -53,14 +62,14 @@ services:
     volumes:
       - *env-license-volume
       - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
-      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
-      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
+      - *x-nxiq-volume-data
+      - *x-nxiq-volume-logs
+    
+  nxiq-proxied:
+    image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     depends_on:
       postgres:
         condition: service_healthy
-
-  nxiq-proxied:
-    image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus-iq-server:${NEXUS_IQ_SERVER_VERSION:?err}"
     environment:
       JAVA_OPTS: "-Ddw.baseUrl=${NXLC_FQDN_URL:-http://iq.localhost} -Djava.util.prefs.userRoot=/sonatype-work/javaprefs"
       DATABASE_TYPE: postgresql
@@ -80,18 +89,19 @@ services:
     volumes:
       - *env-license-volume
       - "./config/nexus-iq-config.yaml:/etc/nexus-iq-server/config.yml:delegated"
-      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-data:/sonatype-work:delegated"
-      - "${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/iq-logs:/opt/sonatype/nexus-iq-server/log:delegated"
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - *x-nxiq-volume-data
+      - *x-nxiq-volume-logs
 
-  nxrm3_direct:
+  nxrm3-direct:
     image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus3:${NEXUS_REPOSITORY_VERSION:?err}"
+    depends_on:
+      postgres-nxrm:
+        condition: service_healthy
     environment:
       BASE_URL: "${NXRM_FQDN_URL:-http://repo.localhost:8081}"
+      DATABASE_PASSWORD: ${PG_DB_PASS:?err}
+      INSTALL4J_ADD_VM_PARAMS: "-Xms2703m -Xmx2703m -XX:MaxDirectMemorySize=2703m -Dnexus.licenseFile=/sonatype-license.lic -Dnexus.datastore.enabled=true -Djava.util.prefs.userRoot=$${NEXUS_DATA}/javaprefs -Dnexus.datastore.nexus.jdbcUrl=jdbc:postgresql://postgres-nxrm:5432/nxrm -Dnexus.datastore.nexus.username=nxrm -Dnexus.datastore.nexus.password=$${DATABASE_PASSWORD} -Dnexus.datastore.clustered.enabled=true"
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
-      NEXUS_CASC_CONFIG: '/opt/nexus.yml'
       NEXUS_IQ_BASE_URL: "${NXLC_FQDN_URL:-http://iq.localhost:8070}"
     healthcheck:
       <<: *nxrm3-healthcheck
@@ -104,17 +114,9 @@ services:
       - admin_password
     volumes:
       - *env-license-volume
-      - *nxrm3-volume-nexus-properties
-      - *nxrm3-volume-casc-config
-      - *nxrm3-volume-data
 
   nxrm3_direct_oss:
-    build:
-      context: ./images/nxrm3
-      args:
-        NEXUS_DOCKER_IMAGE_ORGANIZATION: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}"
-        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
-        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
+    image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus3:${NEXUS_REPOSITORY_VERSION:?err}"
     environment:
       BASE_URL: 'http://repo.localhost:8081'
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
@@ -128,22 +130,21 @@ services:
       - repoOssDemo
     secrets:
       - admin_password
-    volumes:
-      - *nxrm3-volume-nexus-properties
-      - *nxrm3-volume-casc-config-oss
-      - *nxrm3-volume-data
+    # volumes:
+    #   - *nxrm3-volume-nexus-properties
+    #   - *nxrm3-volume-casc-config-oss
+    #   - *nxrm3-volume-data
 
   nxrm3-proxied:
-    build:
-      context: ./images/nxrm3
-      args:
-        NEXUS_DOCKER_IMAGE_ORGANIZATION: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}"
-        NEXUS_REPOSITORY_VERSION: "${NEXUS_REPOSITORY_VERSION}"
-        NEXUS_CASC_PLUGIN_VERSION: "${NEXUS_CASC_PLUGIN_VERSION}"
+    image: "${NEXUS_DOCKER_IMAGE_ORGANIZATION}/nexus3:${NEXUS_REPOSITORY_VERSION:?err}"
+    depends_on:
+      postgres-nxrm:
+        condition: service_healthy
     environment:
-      BASE_URL: "${NXRM_FQDN_URL:-http://repo.localhost}"
+      BASE_URL: "${NXRM_FQDN_URL:-http://repo.localhost}"    
+      DATABASE_PASSWORD: ${PG_DB_PASS:?err}
+      INSTALL4J_ADD_VM_PARAMS: "-Xms2703m -Xmx2703m -XX:MaxDirectMemorySize=2703m -Dnexus.licenseFile=/sonatype-license.lic -Dnexus.datastore.enabled=true -Djava.util.prefs.userRoot=$${NEXUS_DATA}/javaprefs -Dnexus.datastore.nexus.jdbcUrl=jdbc:postgresql://postgres-nxrm:5432/nxrm -Dnexus.datastore.nexus.username=nxrm -Dnexus.datastore.nexus.password=$${DATABASE_PASSWORD} -Dnexus.datastore.clustered.enabled=true"
       NEXUS_SECURITY_RANDOMPASSWORD: 'false'
-      NEXUS_CASC_CONFIG: '/opt/nexus.yml'
       NEXUS_IQ_BASE_URL: "${NXLC_FQDN_URL:-http://iq.localhost}"
     healthcheck:
       <<: *nxrm3-healthcheck
@@ -159,9 +160,6 @@ services:
       - admin_password
     volumes:
       - *env-license-volume
-      - *nxrm3-volume-nexus-properties
-      - *nxrm3-volume-casc-config
-      - *nxrm3-volume-data
 
   postgres:
     image: "postgres:16.0-alpine3.18"
@@ -175,11 +173,34 @@ services:
       - platform
     ports:
       - '5432:5432'
+    shm_size: 128mb
     user: '${UID}:${GID}'
     volumes:
       - *pgsql-volume-data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${PG_DB_USER:?err}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  postgres-nxrm:
+    image: "postgres:16.0-alpine3.18"
+    environment:
+      - POSTGRES_USER=nxrm
+      - POSTGRES_PASSWORD=${PG_DB_PASS:?err}
+      - POSTGRES_DB=nxrm
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - default
+      - platform
+    ports:
+      - '5433:5432'
+    shm_size: 128mb
+    user: '${UID}:${GID}'
+    volumes:
+      - *pgsql-nxrm-volume-data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nxrm"]
       interval: 1s
       timeout: 5s
       retries: 10
@@ -397,3 +418,10 @@ networks:
   default: null
   platform: null
   teamcity: null
+
+volumes:
+  nxiq-data:
+  nxiq-logs:
+  nxrm-data:
+  pg-data:
+  pg-nxrm-data:

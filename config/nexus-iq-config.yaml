@@ -69,14 +69,14 @@ server:
       - type: file
 
         # The file to which current statements will be logged.
-        currentLogFilename: ./log/request.log
+        currentLogFilename: /var/log/nexus-iq-server/request.log
 
         logFormat: '%clientHost %l %user [%date] "%requestURL" %statusCode %bytesSent %elapsedTime "%header{User-Agent}"'
 
         # When the log file rotates, the archived log will be renamed to this and gzipped. The
         # %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
         # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
-        archivedLogFilenamePattern: ./log/request-%d.log.gz
+        archivedLogFilenamePattern: /var/log/nexus-iq-server/request-%d.log.gz
 
         # The number of archived files to keep.
         archivedFileCount: 5
@@ -162,26 +162,26 @@ logging:
       appenders:
         - type: file
           # The file to which audit statements will be logged.
-          currentLogFilename: ./log/audit.log
+          currentLogFilename: /var/log/nexus-iq-server/audit.log
           # When the audit log file rotates, the archived audit log will be renamed to this and gzipped. The
           # %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
           # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
           #
           # If archive is true, this must be specified.
-          archivedLogFilenamePattern: ./log/audit-%d.log.gz
+          archivedLogFilenamePattern: /var/log/nexus-iq-server/audit-%d.log.gz
           # The number of archived audit log files to keep.
           archivedFileCount: 5
     "com.sonatype.insight.policy.violation":
       appenders:
         - type: file
           # The file to which policy violations will be logged.
-          currentLogFilename: ./log/policy-violation.log
+          currentLogFilename: /var/log/nexus-iq-server/policy-violation.log
           # When the policy violation log file rotates, the archived policy violation log will be renamed to this
           # and gzipped. The %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
           # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
           #
           # If archive is true, this must be specified.
-          archivedLogFilenamePattern: ./log/policy-violation-%d.log.gz
+          archivedLogFilenamePattern: /var/log/nexus-iq-server/policy-violation-%d.log.gz
           # The number of archived policy violation log files to keep.
           archivedFileCount: 5
 
@@ -203,14 +203,14 @@ logging:
       logFormat: "%d{'yyyy-MM-dd HH:mm:ss,SSSZ'} %level [%thread] %X{username} %logger - %msg%n"
 
       # The file to which current statements will be logged.
-      currentLogFilename: ./log/clm-server.log
+      currentLogFilename: /var/log/nexus-iq-server/clm-server.log
 
       # When the log file rotates, the archived log will be renamed to this and gzipped. The
       # %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
       # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
       #
       # If archive is true, this must be specified.
-      archivedLogFilenamePattern: ./log/clm-server-%d.log.gz
+      archivedLogFilenamePattern: /var/log/nexus-iq-server/clm-server-%d.log.gz
 
       # The number of archived files to keep.
       archivedFileCount: 5
