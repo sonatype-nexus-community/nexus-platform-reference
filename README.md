@@ -51,7 +51,6 @@ For most of the reference architectures, you'll need a Sonatype license. If you 
 | `direct`        | Yes              | No                                            | Yes - [here](http://repo.localhost:8081) | Yes - [here](http://iq.localhost:8070) | Both Nexus Repository Pro and Sonatype Lifecycle available directly via `localhost` addressed over HTTP. |
 | `repoOssDemo`   | No               | No                                            | Yes - [here](http://repo.localhost:8081) | No                                     | Nexus Repo OSS will be started.                                                                       |
 | `cicd-jenkins`  | Yes              | Yes - [here](http://nexus-platform.localhost) | Yes [here](http://repo.localhost/)       | Yes [here](http://iq.localhost/)       | Includes a Jenkins [here](http://nexus-platform/jenkins)                                              |
-| `cicd-teamcity` | Yes              | Yes - [here](http://nexus-platform.localhost) | Yes [here](http://repo.localhost/)       | Yes [here](http://iq.localhost/)       | Includes a TeamCity Server [here](http://nexus-platform/teamcity)                                     |
 | `jenkins-direct` | No | No | No | No | Just Jenkins running [here](http://localhost:8888/jenkins) |
 
 ## Additional Sub Profiles
