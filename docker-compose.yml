@@ -183,6 +183,7 @@ services:
 
   postgres-nxrm:
     image: "postgres:16.0-alpine3.18"
+    command: -c 'max_connections=150'
     environment:
       - POSTGRES_USER=nxrm
       - POSTGRES_PASSWORD=${PG_DB_PASS:?err}
