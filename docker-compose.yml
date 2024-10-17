@@ -83,7 +83,6 @@ services:
     profiles:
       - proxied
       - cicd-jenkins
-      - cicd-teamcity
     secrets:
       - admin_password
     volumes:
@@ -155,7 +154,6 @@ services:
     profiles:
       - proxied
       - cicd-jenkins
-      - cicd-teamcity
     secrets:
       - admin_password
     volumes:
@@ -268,38 +266,6 @@ services:
       - "./config/nginx-cicd.conf:/etc/nginx/nginx.conf:ro"
       - "./config/nginx-www:/usr/share/nginx/html:ro"
 
-  proxy-cicd-teamcity:
-    image: "nginx:${NGINX_VERSION:?err}"
-    depends_on:
-      - nxrm3-proxied
-      - nxiq-proxied
-      - teamcity-proxied
-    environment:
-      - NGINX_HOST=nexus-platform.localhost
-      - NGINX_PORT=80
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "--fail",
-          "--silent",
-          "http://localhost"
-        ]
-      interval: 15s
-      timeout: 2s
-      retries: 10
-      start_period: 20s
-    networks:
-      - platform
-    ports:
-      - "80:80"
-    profiles:
-      - cicd-teamcity
-    volumes:
-      - "./config/nginx-cicd-teamcity.conf:/etc/nginx/nginx.conf:ro"
-      - "./config/nginx-www:/usr/share/nginx/html:ro"
-
   # ------- Other non Sonatype Services --------
   jenkins-direct:
     build: ./images/jenkins
@@ -371,36 +337,6 @@ services:
     profiles:
       - swagger
 
-  # NOT ARM COMPATIBLE
-  teamcity-proxied:
-    build: ./images/teamcity-server
-    networks:
-      - platform
-      - teamcity
-    profiles:
-      - cicd-teamcity
-    volumes:
-      - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/data:/data/teamcity_server/datadir'
-      - '${DOCKER_ROOT_VOLUME_MOUNT_POINT:?err}/teamcity-server/logs:/opt/teamcity/logs'
-
-  # NOT ARM COMPATIBLE
-  teamcity-agent-linux:
-    build: ./images/teamcity-agent
-    environment:
-      AGENT_NAME: 'Linux Agent'
-      SERVER_URL: 'http://teamcity-proxied:8111/teamcity'
-    networks:
-      - teamcity
-    profiles:
-      - cicd-teamcity
-  # teamcity-agent-windows:
-  #   build: ./images/teamcity-agent-windows
-  #   environment:
-  #     AGENT_NAME: 'Windows Agent'
-  #     SERVER_URL: 'http://teamcity-proxied:8111'
-  #   networks:
-  #     - teamcity
-
   webhook-handler:
     image: sonatypecommunity/sonatype-webhook-handler:1.1.1
     environment:
@@ -417,7 +353,6 @@ services:
 networks:
   default: null
   platform: null
-  teamcity: null
 
 volumes:
   nxiq-data:
